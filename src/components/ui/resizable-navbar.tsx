@@ -8,7 +8,17 @@ import {
   useScroll,
   useMotionValueEvent,
 } from "motion/react";
-import React, { useRef, useState } from "react";
+import React, { createContext, useContext, useEffect, useRef, useState } from "react";
+
+interface NavbarContextType {
+  visible: boolean;
+}
+
+const NavbarContext = createContext<NavbarContextType>({
+  visible: false,
+});
+
+export const useNavbar = () => useContext(NavbarContext);
 
 interface NavbarProps {
   children: React.ReactNode;
@@ -49,70 +59,72 @@ interface MobileNavMenuProps {
 }
 
 export const Navbar = ({ children, className }: NavbarProps) => {
-  const ref = useRef<HTMLElement>(null);
-  const { scrollY } = useScroll();
   const [visible, setVisible] = useState<boolean>(false);
+  const { scrollY } = useScroll();
 
+  // Motion scroll tracker
   useMotionValueEvent(scrollY, "change", (latest) => {
-    if (latest > 40) {
-      setVisible(true);
-    } else {
-      setVisible(false);
-    }
+    setVisible(latest > 25);
   });
 
+  // Native window scroll listener for instantaneous initial check and fallback
+  useEffect(() => {
+    const handleScroll = () => {
+      setVisible(window.scrollY > 25);
+    };
+
+    handleScroll();
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
   return (
-    <motion.header
-      ref={ref}
-      className={cn(
-        "fixed inset-x-0 top-0 z-50 w-full transition-all duration-300",
-        className,
-      )}
-    >
-      {React.Children.map(children, (child) =>
-        React.isValidElement(child)
-          ? React.cloneElement(
-              child as React.ReactElement<{ visible?: boolean }>,
-              { visible },
-            )
-          : child,
-      )}
-    </motion.header>
+    <NavbarContext.Provider value={{ visible }}>
+      <header
+        className={cn(
+          "fixed inset-x-0 top-0 z-50 w-full pointer-events-none",
+          className,
+        )}
+      >
+        <div className="w-full pointer-events-auto">
+          {React.Children.map(children, (child) =>
+            React.isValidElement(child)
+              ? React.cloneElement(
+                  child as React.ReactElement<{ visible?: boolean }>,
+                  { visible },
+                )
+              : child,
+          )}
+        </div>
+      </header>
+    </NavbarContext.Provider>
   );
 };
 
-export const NavBody = ({ children, className, visible }: NavBodyProps) => {
+export const NavBody = ({
+  children,
+  className,
+  visible: propVisible,
+}: NavBodyProps) => {
+  const { visible: contextVisible } = useNavbar();
+  const visible = propVisible !== undefined ? propVisible : contextVisible;
+
   return (
-    <motion.div
-      animate={{
-        width: visible ? "68%" : "100%",
-        y: visible ? 12 : 0,
-        backgroundColor: visible
-          ? "rgba(255, 255, 255, 0.92)"
-          : "rgba(255, 255, 255, 0.8)",
-        backdropFilter: "blur(16px)",
-        boxShadow: visible
-          ? "0 10px 30px -10px rgba(0, 0, 0, 0.08), 0 0 0 1px rgba(0, 0, 0, 0.06)"
-          : "0 1px 0 0 rgba(0, 0, 0, 0.06)",
-        borderRadius: visible ? "9999px" : "0px",
-        paddingLeft: visible ? "1.5rem" : "2rem",
-        paddingRight: visible ? "1.5rem" : "2rem",
-      }}
-      transition={{
-        type: "spring",
-        stiffness: 260,
-        damping: 32,
-      }}
+    <div
       style={{
-        minWidth: visible ? "720px" : "100%",
+        transition:
+          "width 0.45s cubic-bezier(0.16, 1, 0.3, 1), transform 0.45s cubic-bezier(0.16, 1, 0.3, 1), border-radius 0.35s ease, background-color 0.3s ease, box-shadow 0.35s ease, padding 0.35s ease, border-color 0.3s ease",
       }}
       className={cn(
-        "relative z-[60] mx-auto hidden max-w-7xl flex-row items-center justify-between py-3 lg:flex",
+        "relative z-[60] mx-auto hidden flex-row items-center justify-between backdrop-blur-md lg:flex",
+        visible
+          ? "w-[860px] max-w-[92vw] translate-y-3 rounded-full border border-neutral-200/80 bg-white/90 px-6 py-2.5 shadow-lg shadow-black/[0.04]"
+          : "w-full max-w-full translate-y-0 rounded-none border-b border-neutral-200/80 bg-white/95 px-8 py-3.5 shadow-none",
         className,
       )}
     >
       {children}
-    </motion.div>
+    </div>
   );
 };
 
@@ -149,33 +161,30 @@ export const NavItems = ({ items, className, onItemClick }: NavItemsProps) => {
   );
 };
 
-export const MobileNav = ({ children, className, visible }: MobileNavProps) => {
+export const MobileNav = ({
+  children,
+  className,
+  visible: propVisible,
+}: MobileNavProps) => {
+  const { visible: contextVisible } = useNavbar();
+  const visible = propVisible !== undefined ? propVisible : contextVisible;
+
   return (
-    <motion.div
-      animate={{
-        width: visible ? "92%" : "100%",
-        y: visible ? 8 : 0,
-        borderRadius: visible ? "1rem" : "0px",
-        boxShadow: visible
-          ? "0 10px 25px -5px rgba(0, 0, 0, 0.08), 0 0 0 1px rgba(0, 0, 0, 0.06)"
-          : "0 1px 0 0 rgba(0, 0, 0, 0.06)",
-        backgroundColor: visible
-          ? "rgba(255, 255, 255, 0.95)"
-          : "rgba(255, 255, 255, 0.9)",
-        backdropFilter: "blur(14px)",
-      }}
-      transition={{
-        type: "spring",
-        stiffness: 260,
-        damping: 32,
+    <div
+      style={{
+        transition:
+          "width 0.45s cubic-bezier(0.16, 1, 0.3, 1), transform 0.45s cubic-bezier(0.16, 1, 0.3, 1), border-radius 0.35s ease, background-color 0.3s ease, box-shadow 0.35s ease",
       }}
       className={cn(
-        "relative z-50 mx-auto flex w-full flex-col items-center justify-between px-4 py-3 lg:hidden",
+        "relative z-50 mx-auto flex flex-col items-center justify-between backdrop-blur-md lg:hidden",
+        visible
+          ? "w-[92%] translate-y-2 rounded-2xl border border-neutral-200/80 bg-white/95 px-4 py-2.5 shadow-md"
+          : "w-full translate-y-0 rounded-none border-b border-neutral-200/80 bg-white/95 px-4 py-3 shadow-none",
         className,
       )}
     >
       {children}
-    </motion.div>
+    </div>
   );
 };
 
