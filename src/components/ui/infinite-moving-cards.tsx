@@ -147,16 +147,16 @@ export const InfiniteMovingCards = ({
     }
   }, [pauseUserScroll]);
 
-  // Wheel event: trackpad horizontal swipe & mouse wheel
+  const touchStartXRef = useRef<number>(0);
+  const touchStartYRef = useRef<number>(0);
+
+  // Wheel event: ONLY intentional horizontal trackpad swipe interacts with the carousel
   const handleWheel = useCallback(
     (e: React.WheelEvent<HTMLDivElement>) => {
-      if (Math.abs(e.deltaX) > 2 || Math.abs(e.deltaY) > 2) {
+      // If user is scrolling vertically through the webpage, ignore it completely so carousel keeps moving!
+      if (Math.abs(e.deltaX) > Math.abs(e.deltaY) * 1.5 && Math.abs(e.deltaX) > 6) {
         const container = containerRef.current;
         if (container) {
-          // If vertical wheel over carousel, smoothly translate to horizontal scroll
-          if (Math.abs(e.deltaY) > Math.abs(e.deltaX) && Math.abs(e.deltaY) > 3) {
-            container.scrollLeft += e.deltaY * 0.85;
-          }
           scrollPosRef.current = container.scrollLeft;
         }
         pauseUserScroll();
@@ -203,6 +203,30 @@ export const InfiniteMovingCards = ({
     }
   }, [pauseUserScroll]);
 
+  // Touch handlers: only pause if user is swiping horizontally on the carousel
+  const handleTouchStart = (e: React.TouchEvent) => {
+    if (e.touches.length > 0) {
+      touchStartXRef.current = e.touches[0].clientX;
+      touchStartYRef.current = e.touches[0].clientY;
+    }
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    if (e.touches.length > 0) {
+      const dx = Math.abs(e.touches[0].clientX - touchStartXRef.current);
+      const dy = Math.abs(e.touches[0].clientY - touchStartYRef.current);
+      if (dx > dy * 1.5 && dx > 8) {
+        pauseUserScroll();
+      }
+    }
+  };
+
+  const handleTouchEnd = () => {
+    if (isUserScrollingRef.current) {
+      pauseUserScroll();
+    }
+  };
+
   return (
     <div
       className={cn(
@@ -223,9 +247,9 @@ export const InfiniteMovingCards = ({
         onPointerMove={handlePointerMove}
         onPointerUp={handlePointerUp}
         onPointerCancel={handlePointerUp}
-        onTouchStart={pauseUserScroll}
-        onTouchMove={pauseUserScroll}
-        onTouchEnd={pauseUserScroll}
+        onTouchStart={handleTouchStart}
+        onTouchMove={handleTouchMove}
+        onTouchEnd={handleTouchEnd}
         className="scroller relative z-20 flex w-full overflow-x-auto overflow-y-hidden select-none py-4 cursor-grab active:cursor-grabbing [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
         style={{
           WebkitOverflowScrolling: "touch",
