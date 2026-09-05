@@ -1,26 +1,128 @@
 @import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+@custom-variant dark (&:is(.dark *));
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: var(--font-sans);
+  --font-display: var(--font-display);
+  --font-mono: var(--font-mono);
+
+  --color-clsu-green: var(--clsu-green);
+  --color-clsu-green-dark: var(--clsu-green-dark);
+  --color-clsu-green-light: var(--clsu-green-light);
+  --color-clsu-gold: var(--clsu-gold);
+  --color-clsu-gold-dim: var(--clsu-gold-dim);
+  --color-clsu-paper: var(--clsu-paper);
+  --color-clsu-paper-subtle: var(--clsu-paper-subtle);
+  
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+:root {
+  /* Apple System Typography Stack */
+  --font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --font-display: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --font-mono: "SF Mono", Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+
+  /* Official CLSU Brand Tokens */
+  --clsu-green: #008736;
+  --clsu-green-dark: #124d26;
+  --clsu-green-light: #e8f5e9;
+  --clsu-gold: #eab308;
+  --clsu-gold-dim: #ca8a04;
+  --clsu-paper: #fbfcf9;
+  --clsu-paper-subtle: #f4f6f1;
+
+  /* Institutional Light Theme */
+  --background: #fbfcf9;
+  --foreground: #18231c;
+  --card: #ffffff;
+  --card-foreground: #18231c;
+  --popover: #ffffff;
+  --popover-foreground: #18231c;
+  --primary: #008736;
+  --primary-foreground: #ffffff;
+  --secondary: #eef3eb;
+  --secondary-foreground: #124d26;
+  --muted: #f1f4ed;
+  --muted-foreground: #526356;
+  --accent: #fef08a;
+  --accent-foreground: #713f12;
+  --destructive: #dc2626;
+  --border: #e2e7dc;
+  --input: #d8dfd1;
+  --ring: #008736;
+  --radius: 0.5rem;
+}
+
+.dark {
+  --background: #0d1611;
+  --foreground: #f1f5f2;
+  --card: #131f18;
+  --card-foreground: #f1f5f2;
+  --popover: #131f18;
+  --popover-foreground: #f1f5f2;
+  --primary: #22c55e;
+  --primary-foreground: #0d1611;
+  --secondary: #1a2c22;
+  --secondary-foreground: #e2f0e6;
+  --muted: #19271f;
+  --muted-foreground: #8ea194;
+  --accent: #ca8a04;
+  --accent-foreground: #ffffff;
+  --destructive: #ef4444;
+  --border: #23372b;
+  --input: #23372b;
+  --ring: #22c55e;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/40;
+  }
+  body {
+    @apply bg-background text-foreground antialiased font-sans selection:bg-clsu-green/20 selection:text-clsu-green-dark;
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+  }
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-display);
+    letter-spacing: -0.02em;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+/* Institutional utilities */
+.institutional-grid {
+  background-size: 32px 32px;
+  background-image: 
+    linear-gradient(to right, rgba(0, 135, 54, 0.04) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(0, 135, 54, 0.04) 1px, transparent 1px);
+}
+
+.paper-texture {
+  background-color: var(--clsu-paper);
 }

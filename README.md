@@ -1,36 +1,91 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Crops and Resources Research and Development Center (CRRDC)
+## Central Luzon State University (CLSU) — Institutional Web Portal
 
-## Getting Started
+Official institutional website for the **Crops and Resources Research and Development Center (CRRDC)** at **Central Luzon State University (CLSU)**, Science City of Muñoz, Nueva Ecija, Philippines.
 
-First, run the development server:
+Operating under the **Office of the Vice President for Research and Extension (OVPRE)**, CRRDC is the premier agricultural science and natural resources research institution mandated to lead crop breeding, seed production, postharvest biotechnology, and sustainable agronomy.
 
+---
+
+## 🏛️ Institutional Features
+
+- **Dual University Branding:** Official CLSU Seal and CRRDC emblem integrated with Philippine Republic GovBar guidelines.
+- **Apple/iOS System Typography:** Clean SF Pro typography stack (`-apple-system`, `BlinkMacSystemFont`, `SF Pro Display/Text`).
+- **Restrained Color Palette:** Authentic CLSU Green (`#008736`), Green Cobra (`#124d26`), and Gold (`#eab308`).
+- **Four Core Operating Divisions:**
+  1. *Crops & Resources Research and Development Division (CRRDD)*
+  2. *Seed & Planting Material Production Division (SPMPD)*
+  3. *Technology Transfer & Commercialization Division (TTCD)*
+  4. *Administrative & Technical Support Services Division (ATSSD)*
+- **Ten Research Laboratories & Facilities:** Interactive explorer covering Tissue Culture, Molecular Breeding, Soil & Water Analysis, Seed Testing, Postharvest Processing, Crop Protection Clinic, Smart Greenhouse, Agricultural Machinery, GIS & Remote Sensing, and Field Experimental Plots.
+- **Priority Agricultural Commodities:** High-value lowland vegetables, specialty rice, grain legumes, clonal fruits, and bio-energy crops.
+- **Digital Systems Showcase:** Featuring the *Resursee Platform* (Integrated Crop Resources & Plant Doctor), Certified Seed Registry, LabAccess booking, and AgroClimate Advisory Hub.
+- **Verified Campus Location:** Embedded interactive Google Maps with Plus Code (`PWHH+G26, Muñoz, Nueva Ecija`) and administrative directory.
+
+---
+
+## 🚀 Tech Stack
+
+- **Framework:** [Next.js 16 (App Router)](https://nextjs.org/)
+- **Language:** TypeScript 5
+- **Styling:** [Tailwind CSS v4](https://tailwindcss.com/)
+- **Components:** [shadcn/ui](https://ui.shadcn.com/) & [Lucide React](https://lucide.dev/)
+- **Animations:** [Framer Motion](https://www.framer.com/motion/)
+
+---
+
+## 🛠️ Getting Started
+
+### 1. Install Dependencies
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### 2. Run the Development Server
+```bash
+npm run dev
+```
+Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### 3. Production Build
+```bash
+npm run build
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+---
 
-## Learn More
+## 📂 Project Structure
 
-To learn more about Next.js, take a look at the following resources:
+```
+crrdc-website/
+├── public/
+│   ├── images/              # Campus banners & imagery
+│   └── logos/               # Official CLSU & CRRDC seals
+├── src/
+│   ├── app/
+│   │   ├── globals.css      # CLSU OKLCH/Hex tokens & typography
+│   │   ├── layout.tsx       # Institutional metadata & SEO
+│   │   └── page.tsx         # Assembled institutional portal
+│   ├── components/
+│   │   ├── layout/          # Navbar, Footer, GovBar
+│   │   ├── sections/        # Hero, Overview, Divisions, Facilities, Research, Systems, Contact
+│   │   └── ui/              # Button, card, and accessible primitives
+│   ├── data/                # Centralized typed data files
+│   │   ├── institution.ts   # Mandate, Vision, Mission, Pillars
+│   │   ├── divisions.ts     # 4 Divisions data
+│   │   ├── facilities.ts    # 10 Laboratories specifications
+│   │   ├── research.ts      # Commodities, metrics, thrusts, papers
+│   │   ├── digitalSystems.ts# Digital platforms (Resursee, etc.)
+│   │   └── contact.ts       # Coordinates, directory, office hours
+│   └── lib/                 # Utility helpers (cn, etc.)
+└── package.json
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+---
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## 📜 Institutional Affiliation
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+**Central Luzon State University**  
+Science City of Muñoz, Nueva Ecija 3120, Philippines  
+Chartered under Republic Act No. 4067  
+Website: [clsu.edu.ph](https://clsu.edu.ph)
