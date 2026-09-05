@@ -103,20 +103,20 @@ export function Footer() {
             </h4>
             <ul className="space-y-2 text-xs text-neutral-300">
               <li>
-                <span className="font-semibold text-white">CRRDD: </span>
-                <span>Crops & Resources R&D</span>
+                <span className="font-semibold text-white">ICD: </span>
+                <span>Information & Communications</span>
               </li>
               <li>
-                <span className="font-semibold text-white">SPMPD: </span>
-                <span>Seed & Material Production</span>
+                <span className="font-semibold text-white">CMD: </span>
+                <span>Crop Management</span>
               </li>
               <li>
-                <span className="font-semibold text-white">TTCD: </span>
-                <span>Tech Transfer & Commercialization</span>
+                <span className="font-semibold text-white">FRPD: </span>
+                <span>Farm Resources & Post-harvest</span>
               </li>
               <li>
-                <span className="font-semibold text-white">ATSSD: </span>
-                <span>Admin & Technical Support</span>
+                <span className="font-semibold text-white">PBGRD: </span>
+                <span>Plant Breeding & Genetic Resources</span>
               </li>
             </ul>
 

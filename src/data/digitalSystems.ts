@@ -31,6 +31,23 @@ export const digitalSystemsData: DigitalSystem[] = [
     iconName: "Stethoscope",
   },
   {
+    id: "inventory-sales-system",
+    name: "Inventory and Sales Management System",
+    badge: "Enterprise Operations",
+    role: "Agricultural Products, Certified Seed & Equipment Stock Control",
+    description:
+      "Comprehensive inventory and commercialization management system tracking seed stocks, planting materials, bio-fertilizer inventory, and sales transactions across CRRDC production divisions.",
+    features: [
+      "Automated stock auditing for certified seed lots and processed goods",
+      "Point-of-sale invoicing for university accredited agricultural distribution",
+      "Real-time alerts for reorder thresholds and seed storage expiration dates",
+      "Financial reporting compliant with state university accounting guidelines",
+    ],
+    status: "Active Deployment",
+    linkLabel: "Open Inventory Portal",
+    iconName: "ShoppingCart",
+  },
+  {
     id: "seed-registry",
     name: "Central Luzon Certified Seed Registry",
     badge: "Regulatory & Distribution",

@@ -1,216 +1,142 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
 import {
+  institutionalAchievements,
+  collaboratingAgencies,
   priorityCommodities,
-  researchThrusts,
-  samplePublications,
-  researchMetrics,
 } from "@/data/research";
-import {
-  Sprout,
-  FileText,
-  Bookmark,
-  ExternalLink,
-  Target,
-  ArrowUpRight,
-  Sparkles,
-  BookOpen,
-} from "lucide-react";
+import { Award, ShieldCheck, FolderGit2, Building2, CheckCircle2, FileCheck, Layers } from "lucide-react";
 
 export function Research() {
-  const [activePublicationCategory, setActivePublicationCategory] = useState<string>("All");
-
-  const pubCategories = ["All", "Peer-Reviewed Journal", "Technoguide / Extension", "Policy Brief"];
-
-  const filteredPubs =
-    activePublicationCategory === "All"
-      ? samplePublications
-      : samplePublications.filter((p) => p.category === activePublicationCategory);
-
   return (
-    <section id="research" className="py-16 sm:py-20 bg-[#fbfcf9] border-b border-neutral-200">
+    <section id="research" className="py-20 sm:py-24 bg-[#fbfcf9] border-b border-neutral-200">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
-        <div className="max-w-3xl">
+        <div className="max-w-3xl mx-auto text-center mb-12">
           <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#008736]/10 text-[#008736] text-xs font-semibold uppercase tracking-wider mb-3">
-            <span>Research & Innovation Agenda</span>
+            <span>Research Portfolio & Achievements</span>
           </div>
-          <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-neutral-900 tracking-tight">
-            Scientific Thrusts & Priority Commodities
+          <h2 className="text-3xl sm:text-4xl font-extrabold text-neutral-900 tracking-tight">
+            Institutional Research Outputs & Collaborations
           </h2>
-          <p className="mt-3 text-sm sm:text-base text-neutral-600 leading-relaxed">
-            CRRDC focuses research and development on strategic commodities vital to Philippine food security, climate adaptation, and rural household incomes.
+          <p className="mt-3 text-sm sm:text-base text-neutral-600 leading-relaxed max-w-2xl mx-auto">
+            CRRDC generates intellectual property, registered plant varieties, and field technologies in partnership with key Philippine agricultural agencies.
           </p>
         </div>
 
-        {/* Priority Agricultural Commodities Grid */}
-        <div className="mt-12">
-          <div className="flex items-center justify-between mb-6">
-            <h3 className="text-lg sm:text-xl font-bold text-neutral-900">
-              Priority Research Commodities
+        {/* Institutional Outputs & IP Status Grid */}
+        <div>
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="text-base sm:text-lg font-bold text-neutral-900 flex items-center gap-2">
+              <Award className="w-5 h-5 text-[#008736]" />
+              <span>Intellectual Property & Project Registry</span>
             </h3>
-            <span className="text-xs text-neutral-500 font-mono">
-              Region III Agricultural Mandate
+            <span className="text-[11px] font-mono text-neutral-500">
+              *Official Figures Subject to CLSU R&D Audit
             </span>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {priorityCommodities.map((item, idx) => (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {institutionalAchievements.map((item, idx) => (
               <div
                 key={idx}
-                className="bg-white rounded-xl p-5 border border-neutral-200 shadow-sm hover:border-[#008736]/40 hover:shadow-md transition-all flex flex-col justify-between"
+                className="p-5 rounded-xl bg-white border border-neutral-200 shadow-2xs hover:border-[#008736]/30 transition-all flex flex-col justify-between"
               >
                 <div>
                   <div className="flex items-center justify-between mb-2">
-                    <span className="px-2.5 py-0.5 rounded-full bg-[#008736]/10 text-[#008736] text-[11px] font-semibold">
-                      {item.tag}
+                    <span className="text-[10px] font-mono font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-neutral-100 text-neutral-600">
+                      {item.category}
                     </span>
-                    <span className="text-[11px] font-mono text-neutral-400 italic">
-                      {item.scientificName}
+                    <span className="text-[10px] font-mono text-amber-700 bg-amber-50 px-1.5 py-0.5 rounded border border-amber-200">
+                      INSTITUTIONAL METRIC
                     </span>
                   </div>
-                  <h4 className="text-base font-bold text-neutral-900 mt-2">
-                    {item.name}
+
+                  <h4 className="text-sm font-bold text-neutral-900 mt-1">
+                    {item.label}
                   </h4>
-                  <p className="text-xs text-neutral-600 mt-2 leading-relaxed">
-                    {item.focus}
+
+                  <p className="text-xs text-neutral-500 mt-1.5 leading-relaxed">
+                    {item.description}
                   </p>
                 </div>
 
-                <div className="mt-5 pt-3 border-t border-neutral-100">
-                  <span className="text-[10px] font-bold uppercase tracking-wider text-neutral-400 block mb-1.5">
-                    Benchmark Varieties / Selections
+                <div className="mt-5 pt-3 border-t border-neutral-100 flex items-center justify-between">
+                  <span className="text-xs text-neutral-400 font-medium">Record Count:</span>
+                  <span className="font-mono text-xs font-bold text-[#008736] bg-[#008736]/10 px-2.5 py-1 rounded-md">
+                    {item.placeholderValue}
                   </span>
-                  <div className="flex flex-wrap gap-1">
-                    {item.highlightedVarieties.map((v, vIdx) => (
-                      <span
-                        key={vIdx}
-                        className="px-2 py-0.5 rounded bg-neutral-100 text-neutral-700 text-[10px] font-medium"
-                      >
-                        {v}
-                      </span>
-                    ))}
-                  </div>
                 </div>
               </div>
             ))}
           </div>
         </div>
 
-        {/* Strategic Research Thrusts */}
-        <div className="mt-16">
-          <div className="flex items-center justify-between mb-6">
-            <div>
-              <h3 className="text-lg sm:text-xl font-bold text-neutral-900">
-                Core Research Thrusts & Collaboration
-              </h3>
-              <p className="text-xs text-neutral-500 mt-1">
-                Interdisciplinary programs conducted in cooperation with national and international bodies.
-              </p>
-            </div>
+        {/* Collaborating Institutions / Agencies */}
+        <div className="mt-14 pt-10 border-t border-neutral-200">
+          <div className="mb-6">
+            <h3 className="text-base sm:text-lg font-bold text-neutral-900 flex items-center gap-2">
+              <Building2 className="w-5 h-5 text-[#008736]" />
+              <span>Collaborating Institutions & Partner Agencies</span>
+            </h3>
+            <p className="text-xs text-neutral-500 mt-0.5">
+              Joint research initiatives, funding partners, and national agriculture bodies.
+            </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {researchThrusts.map((thrust, idx) => (
+          <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-3">
+            {collaboratingAgencies.map((agency, idx) => (
               <div
                 key={idx}
-                className="bg-white rounded-xl p-6 border border-neutral-200 shadow-sm flex flex-col justify-between"
+                className="p-3.5 rounded-xl bg-white border border-neutral-200/80 shadow-2xs hover:border-[#008736]/30 transition-all"
               >
-                <div>
-                  <div className="flex items-center gap-2 mb-2">
-                    <Target className="w-4 h-4 text-[#008736]" />
-                    <h4 className="text-base font-bold text-neutral-900">
-                      {thrust.title}
-                    </h4>
-                  </div>
-                  <p className="text-xs sm:text-sm text-neutral-600 leading-relaxed mt-2">
-                    {thrust.scope}
-                  </p>
-                </div>
-
-                <div className="mt-6 pt-4 border-t border-neutral-100 space-y-2">
-                  <div className="text-xs text-neutral-800">
-                    <span className="font-semibold text-neutral-900">Target Output: </span>
-                    <span className="text-neutral-600">{thrust.keyDeliverable}</span>
-                  </div>
-                  <div className="flex items-center gap-1.5 text-xs text-neutral-500">
-                    <span className="font-semibold text-neutral-700">Partners: </span>
-                    <span>{thrust.collaborators.join(" · ")}</span>
-                  </div>
-                </div>
+                <span className="font-mono text-xs font-extrabold text-[#008736] block">
+                  {agency.acronym}
+                </span>
+                <span className="text-[11px] font-medium text-neutral-800 line-clamp-2 mt-1 leading-snug">
+                  {agency.name}
+                </span>
+                <span className="text-[10px] text-neutral-400 block mt-2">
+                  {agency.type}
+                </span>
               </div>
             ))}
           </div>
         </div>
 
-        {/* Publications & Technical Releases Archive */}
-        <div className="mt-16 bg-white rounded-2xl border border-neutral-200 p-6 sm:p-8">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-neutral-200 pb-5">
-            <div>
-              <h3 className="text-lg font-bold text-neutral-900">
-                Scientific Publications & Technoguides Archive
-              </h3>
-              <p className="text-xs text-neutral-500 mt-0.5">
-                Peer-reviewed contributions, regional bulletins, and farmer guides published by CRRDC scientists.
-              </p>
-            </div>
-
-            {/* Filter */}
-            <div className="flex flex-wrap gap-1.5">
-              {pubCategories.map((cat) => (
-                <button
-                  key={cat}
-                  onClick={() => setActivePublicationCategory(cat)}
-                  className={`px-3 py-1 rounded-md text-xs font-medium transition-all ${
-                    activePublicationCategory === cat
-                      ? "bg-[#008736] text-white"
-                      : "bg-neutral-100 text-neutral-600 hover:bg-neutral-200"
-                  }`}
-                >
-                  {cat}
-                </button>
-              ))}
-            </div>
+        {/* Priority Agricultural Commodities Strip */}
+        <div className="mt-14 pt-10 border-t border-neutral-200">
+          <div className="mb-6">
+            <h3 className="text-base sm:text-lg font-bold text-neutral-900 flex items-center gap-2">
+              <Layers className="w-5 h-5 text-[#008736]" />
+              <span>Priority Research Commodities</span>
+            </h3>
+            <p className="text-xs text-neutral-500 mt-0.5">
+              Strategic crops under active varietal selection, germplasm preservation, and agronomic optimization.
+            </p>
           </div>
 
-          <div className="mt-6 divide-y divide-neutral-100">
-            {filteredPubs.map((pub) => (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
+            {priorityCommodities.map((crop, idx) => (
               <div
-                key={pub.id}
-                className="py-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 group"
+                key={idx}
+                className="p-3.5 rounded-xl bg-white border border-neutral-200 shadow-2xs"
               >
-                <div className="space-y-1">
-                  <div className="flex items-center gap-2">
-                    <span className="px-2 py-0.5 rounded text-[10px] font-semibold bg-neutral-100 text-neutral-700">
-                      {pub.category}
-                    </span>
-                    <span className="text-[11px] font-mono text-neutral-400">
-                      {pub.year}
-                    </span>
-                  </div>
-                  <h4 className="text-sm font-bold text-neutral-900 group-hover:text-[#008736] transition-colors leading-snug">
-                    {pub.title}
-                  </h4>
-                  <p className="text-xs text-neutral-500">
-                    {pub.authors} — <span className="italic">{pub.journalOrPublisher}</span>
-                  </p>
-                </div>
-
-                <div className="flex-shrink-0 flex items-center gap-2 text-xs font-mono text-neutral-400">
-                  <span>{pub.downloadOrRef}</span>
-                </div>
+                <span className="text-[10px] font-mono text-[#008736] font-semibold block">
+                  {crop.tag}
+                </span>
+                <h4 className="text-xs font-bold text-neutral-900 mt-1">
+                  {crop.name}
+                </h4>
+                <p className="text-[10px] text-neutral-500 italic mt-0.5 font-mono">
+                  {crop.scientificName}
+                </p>
+                <p className="text-[11px] text-neutral-600 mt-2 leading-relaxed">
+                  {crop.focus}
+                </p>
               </div>
             ))}
-          </div>
-
-          <div className="mt-6 pt-4 border-t border-neutral-100 text-center">
-            <span className="text-xs text-neutral-500">
-              For complete institutional publication archives, research reprint requests, or thesis citations, contact the{" "}
-              <a href="#contact" className="text-[#008736] font-semibold hover:underline">
-                CRRDC Research Information Desk
-              </a>.
-            </span>
           </div>
         </div>
       </div>

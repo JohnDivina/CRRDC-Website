@@ -7,6 +7,7 @@ import {
   Wheat,
   FlaskConical,
   MapPinned,
+  ShoppingCart,
   ExternalLink,
   ArrowRight,
   Check,
@@ -16,6 +17,7 @@ import {
 
 const systemIcons: Record<string, React.ReactNode> = {
   Stethoscope: <Stethoscope className="w-6 h-6 text-[#008736]" />,
+  ShoppingCart: <ShoppingCart className="w-6 h-6 text-[#008736]" />,
   Wheat: <Wheat className="w-6 h-6 text-[#008736]" />,
   FlaskConical: <FlaskConical className="w-6 h-6 text-[#008736]" />,
   MapPinned: <MapPinned className="w-6 h-6 text-[#008736]" />,
