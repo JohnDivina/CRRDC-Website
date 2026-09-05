@@ -2,72 +2,91 @@
 
 import React from "react";
 import { AnimatedTestimonials } from "@/components/ui/animated-testimonials";
-import { facilitiesTestimonialsData } from "@/data/facilities";
-import { Microscope, ShieldCheck, MapPin } from "lucide-react";
+
+// Facility data — replace descriptions and src with actual content later
+const facilities = [
+  {
+    quote: "[Facility description to be provided]",
+    name: "Agro-biological Research Laboratory",
+    designation: "R&D Facility · CRRDC",
+    src: "/images/placeholders/facility-01.jpg",
+  },
+  {
+    quote: "[Facility description to be provided]",
+    name: "Biomass Bioenergy and Environmental Science Research Laboratory",
+    designation: "R&D Facility · CRRDC",
+    src: "/images/placeholders/facility-02.jpg",
+  },
+  {
+    quote: "[Facility description to be provided]",
+    name: "Crop Pest and Disease Diagnostic Laboratory",
+    designation: "R&D Facility · CRRDC",
+    src: "/images/placeholders/facility-03.jpg",
+  },
+  {
+    quote: "[Facility description to be provided]",
+    name: "Engineering Makerspace (e-Makerspace)",
+    designation: "R&D Facility · CRRDC",
+    src: "/images/placeholders/facility-04.jpg",
+  },
+  {
+    quote: "[Facility description to be provided]",
+    name: "Food Product and Development Laboratory",
+    designation: "R&D Facility · CRRDC",
+    src: "/images/placeholders/facility-05.jpg",
+  },
+  {
+    quote: "[Facility description to be provided]",
+    name: "Molecular Biology and Biotechnology Laboratory",
+    designation: "R&D Facility · CRRDC",
+    src: "/images/placeholders/facility-06.jpg",
+  },
+  {
+    quote: "[Facility description to be provided]",
+    name: "Multimedia Editing and Management Operations (MEMO) Studio",
+    designation: "R&D Facility · CRRDC",
+    src: "/images/placeholders/facility-07.jpg",
+  },
+  {
+    quote: "[Facility description to be provided]",
+    name: "Plant Breeding and Nursery Laboratory",
+    designation: "R&D Facility · CRRDC",
+    src: "/images/placeholders/facility-08.jpg",
+  },
+  {
+    quote: "[Facility description to be provided]",
+    name: "Seed Technology and Post-Harvest Laboratory",
+    designation: "R&D Facility · CRRDC",
+    src: "/images/placeholders/facility-09.jpg",
+  },
+  {
+    quote: "[Facility description to be provided]",
+    name: "Soil and Plant Analytical Laboratory",
+    designation: "R&D Facility · CRRDC",
+    src: "/images/placeholders/facility-10.jpg",
+  },
+];
 
 export function Facilities() {
   return (
-    <section id="facilities" className="py-20 sm:py-24 bg-white border-b border-neutral-200">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section id="facilities" className="py-24 bg-neutral-50">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
-        <div className="max-w-3xl mx-auto text-center mb-8">
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#008736]/10 text-[#008736] text-xs font-semibold uppercase tracking-wider mb-3">
-            <span>Research Infrastructure & Laboratories</span>
-          </div>
-          <h2 className="text-3xl sm:text-4xl font-extrabold text-neutral-900 tracking-tight">
-            Ten Specialized R&D Facilities
+        <div className="mx-auto max-w-2xl text-center mb-4">
+          <p className="text-xs font-semibold uppercase tracking-[0.15em] text-[#008736]">
+            Research Infrastructure
+          </p>
+          <h2 className="mt-2 text-3xl font-bold tracking-tight text-neutral-900 sm:text-4xl">
+            Our R&amp;D Facilities
           </h2>
-          <p className="mt-3 text-sm sm:text-base text-neutral-600 leading-relaxed max-w-2xl mx-auto">
-            CRRDC operates ten specialized laboratory complexes supporting agricultural genetics, post-harvest engineering, bio-energy, and certified public testing.
+          <p className="mt-3 text-neutral-500">
+            Ten specialized laboratories and research facilities powering
+            agricultural innovation at CRRDC.
           </p>
         </div>
 
-        {/* Aceternity UI — Animated Testimonials Component Adapted for Facilities */}
-        <div className="relative py-4">
-          <AnimatedTestimonials
-            testimonials={facilitiesTestimonialsData}
-            autoplay={false}
-          />
-        </div>
-
-        {/* Ten Facilities Comprehensive Scannable Directory */}
-        <div className="mt-12 pt-10 border-t border-neutral-200">
-          <div className="flex items-center justify-between mb-6">
-            <div>
-              <h3 className="text-base sm:text-lg font-bold text-neutral-900">
-                Complete Laboratory & Facility Inventory
-              </h3>
-              <p className="text-xs text-neutral-500">
-                All facilities located within the CRRDC Complex, Central Luzon State University.
-              </p>
-            </div>
-            <span className="text-xs font-mono font-bold text-[#008736] bg-[#008736]/10 px-2.5 py-1 rounded-full">
-              10 Operating Laboratories
-            </span>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
-            {facilitiesTestimonialsData.map((facility, idx) => (
-              <div
-                key={idx}
-                className="p-3.5 rounded-xl bg-[#fbfcf9] border border-neutral-200 shadow-2xs hover:border-[#008736]/30 transition-all flex flex-col justify-between"
-              >
-                <div>
-                  <span className="text-[10px] font-mono font-bold text-[#008736]">
-                    LAB {String(idx + 1).padStart(2, "0")}
-                  </span>
-                  <h4 className="text-xs font-bold text-neutral-900 mt-1 leading-snug">
-                    {facility.name}
-                  </h4>
-                </div>
-                <div className="mt-3 pt-2 border-t border-neutral-200/60 text-[10px] text-neutral-500 flex items-center gap-1">
-                  <MapPin className="w-3 h-3 text-[#008736] flex-shrink-0" />
-                  <span>CRRDC Campus Wing</span>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
+        {/* Aceternity — Animated Testimonials (adapted for facilities) */}
+        <AnimatedTestimonials testimonials={facilities} autoplay />
       </div>
     </section>
   );

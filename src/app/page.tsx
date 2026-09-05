@@ -1,45 +1,36 @@
 import React from "react";
-import { Navbar } from "@/components/layout/Navbar";
+import { AppNavbar } from "@/components/layout/Navbar";
 import { Hero } from "@/components/sections/Hero";
-import { Overview } from "@/components/sections/Overview";
 import { Divisions } from "@/components/sections/Divisions";
 import { Facilities } from "@/components/sections/Facilities";
 import { Research } from "@/components/sections/Research";
-import { DigitalSystems } from "@/components/sections/DigitalSystems";
-import { Contact } from "@/components/sections/Contact";
-import { Footer } from "@/components/layout/Footer";
+import { Projects } from "@/components/sections/Projects";
+import { Footer } from "@/components/sections/Footer";
 
 export default function Home() {
   return (
     <div className="flex flex-col min-h-screen">
-      {/* Global Institutional Navbar */}
-      <Navbar />
+      {/* Navigation */}
+      <AppNavbar />
 
-      {/* Main Page Landmark */}
       <main id="main-content" className="flex-grow">
-        {/* Section 1: Institutional Hero with Key Indicators */}
+        {/* Hero — Parallax Hero Images */}
         <Hero />
 
-        {/* Section 2: Mandate, Vision, Mission & 4 Pillars */}
-        <Overview />
-
-        {/* Section 3: Four Operating Divisions */}
+        {/* Divisions — Carousel */}
         <Divisions />
 
-        {/* Section 4: Ten Research Laboratories & Facilities */}
+        {/* Facilities — Animated Testimonials */}
         <Facilities />
 
-        {/* Section 5: Scientific Research Thrusts, Commodities & Publications */}
+        {/* Research & Achievements — Stats */}
         <Research />
 
-        {/* Section 6: Digital Transformation Portals (Resursee, Seed Registry, etc.) */}
-        <DigitalSystems />
-
-        {/* Section 7: Campus Location, Google Maps Embed & Communication Desk */}
-        <Contact />
+        {/* Digital Projects — Portfolio Cards */}
+        <Projects />
       </main>
 
-      {/* Global Institutional Footer */}
+      {/* Contact + Footer */}
       <Footer />
     </div>
   );
