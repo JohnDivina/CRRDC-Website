@@ -1,26 +1,34 @@
 "use client";
 
 import React from "react";
-import Carousel from "@/components/ui/carousel";
+import { InfiniteMovingCards, DivisionSlide } from "@/components/ui/infinite-moving-cards";
 
-const divisionSlides = [
+const divisions: DivisionSlide[] = [
   {
     title: "Information and Communications Division",
+    description:
+      "Modern ICT systems, peer-reviewed knowledge synthesis, scientific media dissemination, and digital knowledge platforms for farmers.",
     button: "Explore Division",
     src: "/images/placeholders/division-01.jpg",
   },
   {
     title: "Crop Management Division",
+    description:
+      "Integrated pest diagnostics, climate-smart agronomy protocols, precision nutrient management, and soil ecology sustainability.",
     button: "Explore Division",
     src: "/images/placeholders/division-02.jpg",
   },
   {
     title: "Farm Resources and Post-harvest Division",
+    description:
+      "Post-harvest engineering, bioenergy technology, automated storage preservation, and mechanized prototype fabrication.",
     button: "Explore Division",
     src: "/images/placeholders/division-03.jpg",
   },
   {
     title: "Plant Breeding and Genetic Resources Division",
+    description:
+      "Breeder seed development, marker-assisted molecular breeding, germplasm indexing, and stress-tolerant crop cultivars.",
     button: "Explore Division",
     src: "/images/placeholders/division-04.jpg",
   },
@@ -28,7 +36,7 @@ const divisionSlides = [
 
 export function Divisions() {
   return (
-    <section id="divisions" className="py-20 bg-white">
+    <section id="divisions" className="py-20 bg-white overflow-hidden">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         {/* Concise Section Header */}
         <div className="mx-auto max-w-xl text-center mb-10">
@@ -43,11 +51,16 @@ export function Divisions() {
             advancing crop science, genomics, farm engineering, and communication.
           </p>
         </div>
+      </div>
 
-        {/* Aceternity — Carousel (Compact & Centered) */}
-        <div className="relative w-full pb-14">
-          <Carousel slides={divisionSlides} />
-        </div>
+      {/* Infinite Moving Cards with Faded Edges and Constant Smooth Motion */}
+      <div className="relative w-full overflow-hidden">
+        <InfiniteMovingCards
+          items={divisions}
+          direction="left"
+          speed="normal"
+          pauseOnHover={true}
+        />
       </div>
     </section>
   );

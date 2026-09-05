@@ -137,3 +137,17 @@
     linear-gradient(to bottom, rgba(0, 135, 54, 0.02) 1px, transparent 1px);
   background-size: 100% 100%, 18px 18px, 36px 36px, 36px 36px;
 }
+
+/* Infinite Moving Cards continuous smooth scroll */
+@keyframes scroll {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(calc(-50% - 0.75rem));
+  }
+}
+
+.animate-scroll {
+  animation: scroll var(--animation-duration, 35s) var(--animation-direction, forwards) linear infinite;
+}
