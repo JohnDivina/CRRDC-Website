@@ -26,252 +26,140 @@ export const InfiniteMovingCards = ({
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const scrollerRef = useRef<HTMLUListElement>(null);
+  const [start, setStart] = useState(true);
+  const [isMomentarilyPaused, setIsMomentarilyPaused] = useState(false);
+  const [isDragging, setIsDragging] = useState(false);
+  const [dragOffset, setDragOffset] = useState(0);
 
-  // Interaction & animation refs
-  const isInteractingRef = useRef(false);
-  const isHoveredRef = useRef(false);
-  const isDraggingRef = useRef(false);
   const startXRef = useRef(0);
-  const startScrollLeftRef = useRef(0);
+  const currentDragOffsetRef = useRef(0);
   const hasDraggedRef = useRef(false);
-  const setWidthRef = useRef(0);
-  const resumeTimeoutRef = useRef<NodeJS.Timeout | null>(null);
-  const lastTimeRef = useRef(performance.now());
-  const animationFrameIdRef = useRef<number | null>(null);
+  const pauseTimerRef = useRef<NodeJS.Timeout | null>(null);
 
-  // State to reflect active user scrolling for UI classes
-  const [isUserActive, setIsUserActive] = useState(false);
+  // Set animation duration and direction CSS variables
+  useEffect(() => {
+    if (containerRef.current) {
+      containerRef.current.style.setProperty(
+        "--animation-direction",
+        direction === "left" ? "forwards" : "reverse"
+      );
 
-  // 3 duplicate sets for seamless infinite bidirectional scrolling
-  const triplicatedItems = [...items, ...items, ...items];
-
-  // Pause momentarily when scrolled or interacted with
-  const pauseMomentarily = useCallback((duration = 2000) => {
-    isInteractingRef.current = true;
-    setIsUserActive(true);
-
-    if (resumeTimeoutRef.current) {
-      clearTimeout(resumeTimeoutRef.current);
+      const duration =
+        speed === "fast" ? "22s" : speed === "slow" ? "52s" : "34s";
+      containerRef.current.style.setProperty("--animation-duration", duration);
+      setStart(true);
     }
+  }, [direction, speed]);
 
-    resumeTimeoutRef.current = setTimeout(() => {
-      isInteractingRef.current = false;
-      setIsUserActive(false);
+  // Momentary stop on scroll or interaction
+  const triggerMomentaryPause = useCallback((duration = 1600) => {
+    setIsMomentarilyPaused(true);
+    if (pauseTimerRef.current) {
+      clearTimeout(pauseTimerRef.current);
+    }
+    pauseTimerRef.current = setTimeout(() => {
+      setIsMomentarilyPaused(false);
     }, duration);
   }, []);
 
-  // Measure card set width for infinite wrap-around
-  const measureSetWidth = useCallback(() => {
-    if (scrollerRef.current && containerRef.current) {
-      const children = scrollerRef.current.children;
-      if (children.length >= items.length * 2) {
-        const first = children[0] as HTMLElement;
-        const middle = children[items.length] as HTMLElement;
-        if (first && middle) {
-          const width = middle.offsetLeft - first.offsetLeft;
-          if (width > 0) {
-            setWidthRef.current = width;
-            // Initialize scroll position to middle set if at 0
-            if (containerRef.current.scrollLeft === 0) {
-              containerRef.current.scrollLeft = width;
-            }
-          }
-        }
-      }
-    }
-  }, [items.length]);
-
-  // Initial layout measurement
+  // Listen to window scroll so carousel momentarily stops when page is being scrolled
   useEffect(() => {
-    measureSetWidth();
-    const t1 = setTimeout(measureSetWidth, 100);
-    const t2 = setTimeout(measureSetWidth, 400);
+    const handleWindowScroll = () => {
+      triggerMomentaryPause(1400);
+    };
 
-    const handleResize = () => measureSetWidth();
-    window.addEventListener("resize", handleResize);
-
+    window.addEventListener("scroll", handleWindowScroll, { passive: true });
     return () => {
-      clearTimeout(t1);
-      clearTimeout(t2);
-      window.removeEventListener("resize", handleResize);
-    };
-  }, [measureSetWidth]);
-
-  // Continuous auto-movement loop with momentary pause
-  useEffect(() => {
-    lastTimeRef.current = performance.now();
-
-    const animate = (time: number) => {
-      const dt = Math.min((time - lastTimeRef.current) / 1000, 0.1);
-      lastTimeRef.current = time;
-
-      const container = containerRef.current;
-      const setW = setWidthRef.current;
-
-      // Only auto-scroll when user is NOT interacting, dragging, or hovering
-      if (
-        container &&
-        setW > 0 &&
-        !isInteractingRef.current &&
-        !isDraggingRef.current &&
-        (!pauseOnHover || !isHoveredRef.current)
-      ) {
-        const pxPerSec = speed === "fast" ? 52 : speed === "slow" ? 20 : 32;
-        const delta = (direction === "left" ? 1 : -1) * pxPerSec * dt;
-        container.scrollLeft += delta;
-
-        // Seamless wrap-around
-        if (container.scrollLeft >= setW * 2) {
-          container.scrollLeft -= setW;
-        } else if (container.scrollLeft <= setW * 0.1) {
-          container.scrollLeft += setW;
-        }
-      }
-
-      animationFrameIdRef.current = requestAnimationFrame(animate);
-    };
-
-    animationFrameIdRef.current = requestAnimationFrame(animate);
-
-    return () => {
-      if (animationFrameIdRef.current) {
-        cancelAnimationFrame(animationFrameIdRef.current);
-      }
-      if (resumeTimeoutRef.current) {
-        clearTimeout(resumeTimeoutRef.current);
+      window.removeEventListener("scroll", handleWindowScroll);
+      if (pauseTimerRef.current) {
+        clearTimeout(pauseTimerRef.current);
       }
     };
-  }, [direction, speed, pauseOnHover]);
+  }, [triggerMomentaryPause]);
 
-  // Scroll event handler: wraps infinite scroller and detects user scroll
-  const handleScroll = useCallback(() => {
-    const container = containerRef.current;
-    const setW = setWidthRef.current;
-    if (!container || setW <= 0) return;
+  // Wheel event on carousel itself also triggers momentary pause
+  const handleWheel = () => {
+    triggerMomentaryPause(1800);
+  };
 
-    // Infinite loop boundaries check
-    if (container.scrollLeft >= setW * 2) {
-      container.scrollLeft -= setW;
-    } else if (container.scrollLeft <= setW * 0.1) {
-      container.scrollLeft += setW;
+  // Pointer Drag Handlers (supports both mouse and touch drag)
+  const handlePointerDown = (e: React.PointerEvent) => {
+    setIsDragging(true);
+    hasDraggedRef.current = false;
+    startXRef.current = e.clientX;
+    currentDragOffsetRef.current = dragOffset;
+    triggerMomentaryPause(3000);
+  };
+
+  const handlePointerMove = (e: React.PointerEvent) => {
+    if (!isDragging) return;
+    const deltaX = e.clientX - startXRef.current;
+    if (Math.abs(deltaX) > 5) {
+      hasDraggedRef.current = true;
     }
+    // Dampen drag bounds for clean feel
+    const newOffset = currentDragOffsetRef.current + deltaX;
+    setDragOffset(Math.max(-250, Math.min(250, newOffset)));
+    triggerMomentaryPause(3000);
+  };
 
-    // If user is touching, wheeling, or dragging, refresh pause timer
-    if (isInteractingRef.current || isDraggingRef.current) {
-      pauseMomentarily(2200);
+  const handlePointerUp = () => {
+    if (isDragging) {
+      setIsDragging(false);
+      triggerMomentaryPause(2000);
+      // Smoothly return drag offset to 0 so the marquee loop remains aligned
+      setTimeout(() => {
+        setDragOffset(0);
+      }, 800);
     }
-  }, [pauseMomentarily]);
+  };
 
-  // Wheel event handler: supports trackpad horizontal swipe & mouse wheel
-  const handleWheel = useCallback(
-    (e: React.WheelEvent<HTMLDivElement>) => {
-      pauseMomentarily(2200);
-
-      // If user scrolls using standard vertical mouse wheel over cards, assist with horizontal translation
-      if (Math.abs(e.deltaY) > Math.abs(e.deltaX) && Math.abs(e.deltaY) > 5) {
-        if (containerRef.current) {
-          containerRef.current.scrollLeft += e.deltaY * 0.75;
-        }
-      }
-    },
-    [pauseMomentarily],
-  );
-
-  // Mouse Drag handlers for desktop
-  const handleMouseDown = useCallback(
-    (e: React.MouseEvent<HTMLDivElement>) => {
-      if (!containerRef.current) return;
-      isDraggingRef.current = true;
-      hasDraggedRef.current = false;
-      startXRef.current = e.pageX - containerRef.current.offsetLeft;
-      startScrollLeftRef.current = containerRef.current.scrollLeft;
-      pauseMomentarily(3000);
-    },
-    [pauseMomentarily],
-  );
-
-  const handleMouseMove = useCallback(
-    (e: React.MouseEvent<HTMLDivElement>) => {
-      if (!isDraggingRef.current || !containerRef.current) return;
-      e.preventDefault();
-      const x = e.pageX - containerRef.current.offsetLeft;
-      const walk = (x - startXRef.current) * 1.2;
-      if (Math.abs(walk) > 5) {
-        hasDraggedRef.current = true;
-      }
-      containerRef.current.scrollLeft = startScrollLeftRef.current - walk;
-      pauseMomentarily(2500);
-    },
-    [pauseMomentarily],
-  );
-
-  const handleMouseUpOrLeave = useCallback(() => {
-    if (isDraggingRef.current) {
-      isDraggingRef.current = false;
-      pauseMomentarily(2000);
-    }
-  }, [pauseMomentarily]);
-
-  // Touch handlers for mobile / tablet
-  const handleTouchStart = useCallback(() => {
-    pauseMomentarily(3000);
-  }, [pauseMomentarily]);
-
-  const handleTouchMove = useCallback(() => {
-    pauseMomentarily(3000);
-  }, [pauseMomentarily]);
-
-  const handleTouchEnd = useCallback(() => {
-    pauseMomentarily(2200);
-  }, [pauseMomentarily]);
+  // Duplicate items for seamless continuous looping
+  const duplicatedItems = [...items, ...items];
 
   return (
     <div
+      ref={containerRef}
+      onWheel={handleWheel}
+      onPointerDown={handlePointerDown}
+      onPointerMove={handlePointerMove}
+      onPointerUp={handlePointerUp}
+      onPointerCancel={handlePointerUp}
       className={cn(
-        "relative z-20 w-full overflow-hidden [mask-image:linear-gradient(to_right,transparent,white_12%,white_88%,transparent)] [-webkit-mask-image:linear-gradient(to_right,transparent,white_12%,white_88%,transparent)]",
-        className,
+        "scroller relative z-20 w-full overflow-hidden [mask-image:linear-gradient(to_right,transparent,white_8%,white_92%,transparent)] [-webkit-mask-image:linear-gradient(to_right,transparent,white_8%,white_92%,transparent)]",
+        className
       )}
     >
       {/* Soft gradient edge fade overlays pinned to outer boundaries */}
-      <div className="pointer-events-none absolute left-0 top-0 bottom-0 z-30 w-20 sm:w-36 bg-gradient-to-r from-white via-white/85 to-transparent" />
-      <div className="pointer-events-none absolute right-0 top-0 bottom-0 z-30 w-20 sm:w-36 bg-gradient-to-l from-white via-white/85 to-transparent" />
+      <div className="pointer-events-none absolute left-0 top-0 bottom-0 z-30 w-16 sm:w-28 bg-gradient-to-r from-white via-white/85 to-transparent" />
+      <div className="pointer-events-none absolute right-0 top-0 bottom-0 z-30 w-16 sm:w-28 bg-gradient-to-l from-white via-white/85 to-transparent" />
 
-      {/* Scrollable, draggable card container */}
+      {/* Interactive Drag & Marquee Wrapper */}
       <div
-        ref={containerRef}
-        onScroll={handleScroll}
-        onWheel={handleWheel}
-        onMouseDown={handleMouseDown}
-        onMouseMove={handleMouseMove}
-        onMouseUp={handleMouseUpOrLeave}
-        onMouseLeave={() => {
-          handleMouseUpOrLeave();
-          isHoveredRef.current = false;
+        className="w-full cursor-grab active:cursor-grabbing select-none"
+        style={{
+          transform: `translateX(${dragOffset}px)`,
+          transition: isDragging ? "none" : "transform 0.6s cubic-bezier(0.16, 1, 0.3, 1)",
         }}
-        onMouseEnter={() => {
-          isHoveredRef.current = true;
-        }}
-        onTouchStart={handleTouchStart}
-        onTouchMove={handleTouchMove}
-        onTouchEnd={handleTouchEnd}
-        className={cn(
-          "scroller relative z-20 flex w-full overflow-x-auto overflow-y-hidden select-none py-4",
-          "cursor-grab active:cursor-grabbing",
-          "[scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden",
-          isUserActive && "scroll-smooth",
-        )}
-        style={{ WebkitOverflowScrolling: "touch" }}
       >
         <ul
           ref={scrollerRef}
-          className="flex min-w-max shrink-0 gap-5 px-4 flex-nowrap"
+          className={cn(
+            "flex min-w-full shrink-0 gap-6 py-4 w-max flex-nowrap",
+            start && "animate-scroll",
+            pauseOnHover && "hover:[animation-play-state:paused]"
+          )}
+          style={{
+            animationPlayState:
+              isMomentarilyPaused || isDragging ? "paused" : "running",
+          }}
         >
-          {triplicatedItems.map((item, idx) => {
+          {duplicatedItems.map((item, idx) => {
             const divisionNumber = (idx % items.length) + 1;
             return (
               <li
                 key={`${item.title}-${idx}`}
-                className="group relative flex h-[270px] w-[285px] sm:h-[285px] sm:w-[335px] md:w-[365px] flex-shrink-0 flex-col justify-end overflow-hidden rounded-2xl border border-neutral-200/80 bg-neutral-900 p-6 shadow-md transition-all duration-300 hover:shadow-xl hover:border-neutral-300 cursor-pointer"
+                className="group relative flex h-[275px] w-[300px] sm:h-[290px] sm:w-[350px] md:w-[380px] flex-shrink-0 flex-col justify-end overflow-hidden rounded-2xl border border-neutral-200/80 bg-neutral-900 p-6 shadow-md transition-all duration-300 hover:shadow-xl hover:border-neutral-300 cursor-pointer"
                 onClick={(e) => {
                   if (hasDraggedRef.current) {
                     e.preventDefault();
