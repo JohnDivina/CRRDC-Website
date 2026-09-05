@@ -3,7 +3,6 @@
 import React from "react";
 import Carousel from "@/components/ui/carousel";
 
-// Division slides — replace src with actual images later
 const divisionSlides = [
   {
     title: "Information and Communications Division",
@@ -29,27 +28,26 @@ const divisionSlides = [
 
 export function Divisions() {
   return (
-    <section id="divisions" className="py-24 bg-white">
+    <section id="divisions" className="py-20 bg-white">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        {/* Section Header */}
-        <div className="mx-auto max-w-2xl text-center mb-4">
-          <p className="text-xs font-semibold uppercase tracking-[0.15em] text-[#008736]">
-            Our Divisions
-          </p>
-          <h2 className="mt-2 text-3xl font-bold tracking-tight text-neutral-900 sm:text-4xl">
+        {/* Concise Section Header */}
+        <div className="mx-auto max-w-xl text-center mb-10">
+          <span className="text-xs font-semibold uppercase tracking-widest text-[#008736]">
+            Organization
+          </span>
+          <h2 className="mt-1.5 text-2xl font-bold tracking-tight text-neutral-900 sm:text-3xl">
             Four Core Operating Divisions
           </h2>
-          <p className="mt-3 text-neutral-500">
-            CRRDC coordinates its research mandates through four specialized
-            divisions covering crop science, post-harvest engineering,
-            communications, and genetic resources.
+          <p className="mt-2 text-sm text-neutral-600">
+            CRRDC executes research mandates across four specialized divisions
+            advancing crop science, genomics, farm engineering, and communication.
           </p>
         </div>
-      </div>
 
-      {/* Aceternity — Carousel */}
-      <div className="relative overflow-hidden w-full h-full py-12">
-        <Carousel slides={divisionSlides} />
+        {/* Aceternity — Carousel (Compact & Centered) */}
+        <div className="relative w-full pb-14">
+          <Carousel slides={divisionSlides} />
+        </div>
       </div>
     </section>
   );

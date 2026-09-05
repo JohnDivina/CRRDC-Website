@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useState } from "react";
-import Image from "next/image";
 import {
   Navbar,
   NavBody,
@@ -22,7 +21,7 @@ export function AppNavbar() {
     { name: "Divisions", link: "#divisions" },
     { name: "Facilities", link: "#facilities" },
     { name: "Research", link: "#research" },
-    { name: "Projects", link: "#projects" },
+    { name: "Resources", link: "#resources" },
     { name: "Contact", link: "#contact" },
   ];
 
@@ -31,33 +30,9 @@ export function AppNavbar() {
       <Navbar>
         {/* Desktop Navigation */}
         <NavBody>
-          <NavbarLogo href="/">
-            <div className="flex items-center gap-2.5">
-              <div className="relative w-8 h-8 flex-shrink-0">
-                <Image
-                  src="/logos/clsu-logo.png"
-                  alt="CLSU Seal"
-                  fill
-                  className="object-contain"
-                  priority
-                />
-              </div>
-              <div className="relative w-8 h-8 flex-shrink-0">
-                <Image
-                  src="/logos/crrdc-logo.png"
-                  alt="CRRDC Logo"
-                  fill
-                  className="object-contain"
-                  priority
-                />
-              </div>
-              <span className="text-sm font-bold text-neutral-900">CRRDC</span>
-            </div>
-          </NavbarLogo>
-
+          <NavbarLogo />
           <NavItems items={navItems} />
-
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2.5">
             <NavbarButton
               href="https://crrdc.vercel.app"
               target="_blank"
@@ -67,7 +42,7 @@ export function AppNavbar() {
               Resursee
             </NavbarButton>
             <NavbarButton href="#contact" variant="primary">
-              Get in Touch
+              Contact
             </NavbarButton>
           </div>
         </NavBody>
@@ -75,28 +50,7 @@ export function AppNavbar() {
         {/* Mobile Navigation */}
         <MobileNav>
           <MobileNavHeader>
-            <NavbarLogo href="/">
-              <div className="flex items-center gap-2">
-                <div className="relative w-7 h-7 flex-shrink-0">
-                  <Image
-                    src="/logos/clsu-logo.png"
-                    alt="CLSU Seal"
-                    fill
-                    className="object-contain"
-                  />
-                </div>
-                <div className="relative w-7 h-7 flex-shrink-0">
-                  <Image
-                    src="/logos/crrdc-logo.png"
-                    alt="CRRDC Logo"
-                    fill
-                    className="object-contain"
-                  />
-                </div>
-                <span className="text-sm font-bold text-neutral-900">CRRDC</span>
-              </div>
-            </NavbarLogo>
-
+            <NavbarLogo />
             <MobileNavToggle
               isOpen={isMobileMenuOpen}
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
@@ -112,19 +66,19 @@ export function AppNavbar() {
                 key={`mobile-link-${idx}`}
                 href={item.link}
                 onClick={() => setIsMobileMenuOpen(false)}
-                className="relative text-neutral-600 dark:text-neutral-300"
+                className="w-full py-1 text-sm font-medium text-neutral-700 hover:text-neutral-950 transition-colors"
               >
-                <span className="block">{item.name}</span>
+                {item.name}
               </a>
             ))}
-            <div className="flex w-full flex-col gap-4">
+            <div className="mt-2 flex w-full flex-col gap-2 pt-2 border-t border-neutral-100">
               <NavbarButton
                 href="https://crrdc.vercel.app"
                 target="_blank"
                 rel="noopener noreferrer"
                 onClick={() => setIsMobileMenuOpen(false)}
                 variant="secondary"
-                className="w-full"
+                className="w-full py-2 text-xs"
               >
                 Resursee Platform
               </NavbarButton>
@@ -132,9 +86,9 @@ export function AppNavbar() {
                 href="#contact"
                 onClick={() => setIsMobileMenuOpen(false)}
                 variant="primary"
-                className="w-full"
+                className="w-full py-2 text-xs"
               >
-                Get in Touch
+                Contact
               </NavbarButton>
             </div>
           </MobileNavMenu>

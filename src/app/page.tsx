@@ -4,33 +4,33 @@ import { Hero } from "@/components/sections/Hero";
 import { Divisions } from "@/components/sections/Divisions";
 import { Facilities } from "@/components/sections/Facilities";
 import { Research } from "@/components/sections/Research";
-import { Projects } from "@/components/sections/Projects";
+import { Resources } from "@/components/sections/Resources";
 import { Footer } from "@/components/sections/Footer";
 
 export default function Home() {
   return (
     <div className="flex flex-col min-h-screen">
-      {/* Navigation */}
+      {/* Fixed Resizable Navbar */}
       <AppNavbar />
 
       <main id="main-content" className="flex-grow">
-        {/* Hero — Parallax Hero Images */}
+        {/* Section 1: Hero — Parallax Hero Images */}
         <Hero />
 
-        {/* Divisions — Carousel */}
+        {/* Section 2: Divisions — Compact 3D Carousel */}
         <Divisions />
 
-        {/* Facilities — Animated Testimonials */}
+        {/* Section 3: Facilities — Animated Testimonials */}
         <Facilities />
 
-        {/* Research & Achievements — Stats */}
+        {/* Section 4: Research & Achievements — Metrics */}
         <Research />
 
-        {/* Digital Projects — Portfolio Cards */}
-        <Projects />
+        {/* Section 5: Resources & Digital Tools */}
+        <Resources />
       </main>
 
-      {/* Contact + Footer */}
+      {/* Section 6: Contact & Footer */}
       <Footer />
     </div>
   );

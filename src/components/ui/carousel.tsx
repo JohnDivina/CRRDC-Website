@@ -1,4 +1,5 @@
 "use client";
+
 import { IconArrowNarrowRight } from "@tabler/icons-react";
 import { useState, useRef, useId, useEffect } from "react";
 
@@ -65,35 +66,35 @@ const Slide = ({ slide, index, current, handleSlideClick }: SlideProps) => {
   const { src, button, title } = slide;
 
   return (
-    <div className="[perspective:1200px] [transform-style:preserve-3d]">
+    <div className="[perspective:1000px] [transform-style:preserve-3d]">
       <li
         ref={slideRef}
-        className="flex flex-1 flex-col items-center justify-center relative text-center text-white opacity-100 transition-all duration-300 ease-in-out w-[70vmin] h-[70vmin] mx-[4vmin] z-10 "
+        className="relative z-10 flex h-[260px] w-[300px] flex-1 flex-col items-center justify-center text-center text-white opacity-100 transition-all duration-300 ease-in-out sm:h-[300px] sm:w-[420px] md:h-[320px] md:w-[460px] mx-2 sm:mx-3 cursor-pointer"
         onClick={() => handleSlideClick(index)}
         onMouseMove={handleMouseMove}
         onMouseLeave={handleMouseLeave}
         style={{
           transform:
             current !== index
-              ? "scale(0.98) rotateX(8deg)"
+              ? "scale(0.96) rotateX(6deg)"
               : "scale(1) rotateX(0deg)",
           transition: "transform 0.5s cubic-bezier(0.4, 0, 0.2, 1)",
           transformOrigin: "bottom",
         }}
       >
         <div
-          className="absolute top-0 left-0 w-full h-full bg-[#1D1F2F] rounded-[1%] overflow-hidden transition-all duration-150 ease-out"
+          className="absolute inset-0 overflow-hidden rounded-2xl bg-neutral-900 shadow-lg transition-all duration-150 ease-out"
           style={{
             transform:
               current === index
-                ? "translate3d(calc(var(--x) / 30), calc(var(--y) / 30), 0)"
+                ? "translate3d(calc(var(--x) / 35), calc(var(--y) / 35), 0)"
                 : "none",
           }}
         >
           <img
-            className="absolute inset-0 w-[120%] h-[120%] object-cover opacity-100 transition-opacity duration-600 ease-in-out"
+            className="absolute inset-0 h-[115%] w-[115%] object-cover transition-opacity duration-500 ease-in-out"
             style={{
-              opacity: current === index ? 1 : 0.5,
+              opacity: current === index ? 0.9 : 0.4,
             }}
             alt={title}
             src={src}
@@ -101,23 +102,24 @@ const Slide = ({ slide, index, current, handleSlideClick }: SlideProps) => {
             loading="eager"
             decoding="sync"
           />
-          {current === index && (
-            <div className="absolute inset-0 bg-black/30 transition-all duration-1000" />
-          )}
+          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
         </div>
 
         <article
-          className={`relative p-[4vmin] transition-opacity duration-1000 ease-in-out ${
+          className={`relative z-20 px-6 py-4 transition-opacity duration-500 ease-in-out ${
             current === index ? "opacity-100 visible" : "opacity-0 invisible"
           }`}
         >
-          <h2 className="text-lg md:text-2xl lg:text-4xl font-semibold  relative">
+          <span className="text-[10px] font-semibold uppercase tracking-widest text-[#47c76a]">
+            Division 0{index + 1}
+          </span>
+          <h3 className="mt-1 text-base font-semibold leading-snug sm:text-lg md:text-xl text-white">
             {title}
-          </h2>
-          <div className="flex justify-center">
-            <button className="mt-6  px-4 py-2 w-fit mx-auto sm:text-sm text-black bg-white h-12 border border-transparent text-xs flex justify-center items-center rounded-2xl hover:shadow-lg transition duration-200 shadow-[0px_2px_3px_-1px_rgba(0,0,0,0.1),0px_1px_0px_0px_rgba(25,28,33,0.02),0px_0px_0px_1px_rgba(25,28,33,0.08)]">
+          </h3>
+          <div className="mt-4 flex justify-center">
+            <span className="inline-flex items-center gap-1 rounded-full bg-white/95 px-3.5 py-1 text-xs font-semibold text-neutral-900 shadow-sm transition hover:bg-white active:scale-95">
               {button}
-            </button>
+            </span>
           </div>
         </article>
       </li>
@@ -138,13 +140,14 @@ const CarouselControl = ({
 }: CarouselControlProps) => {
   return (
     <button
-      className={`w-10 h-10 flex items-center mx-2 justify-center bg-neutral-200 dark:bg-neutral-800 border-3 border-transparent rounded-full focus:border-[#6D64F7] focus:outline-none hover:-translate-y-0.5 active:translate-y-0.5 transition duration-200 ${
+      className={`flex h-9 w-9 items-center justify-center rounded-full border border-neutral-200 bg-white text-neutral-700 shadow-xs transition hover:border-neutral-300 hover:text-neutral-900 active:scale-95 ${
         type === "previous" ? "rotate-180" : ""
       }`}
       title={title}
       onClick={handleClick}
+      aria-label={title}
     >
-      <IconArrowNarrowRight className="text-neutral-600 dark:text-neutral-200" />
+      <IconArrowNarrowRight className="h-4 w-4" />
     </button>
   );
 };
@@ -176,11 +179,11 @@ export default function Carousel({ slides }: CarouselProps) {
 
   return (
     <div
-      className="relative w-[70vmin] h-[70vmin] mx-auto"
+      className="relative mx-auto h-[260px] w-[300px] sm:h-[300px] sm:w-[420px] md:h-[320px] md:w-[460px]"
       aria-labelledby={`carousel-heading-${id}`}
     >
       <ul
-        className="absolute flex mx-[-4vmin] transition-transform duration-1000 ease-in-out"
+        className="absolute flex mx-[-8px] sm:mx-[-12px] transition-transform duration-700 ease-out"
         style={{
           transform: `translateX(-${current * (100 / slides.length)}%)`,
         }}
@@ -196,16 +199,19 @@ export default function Carousel({ slides }: CarouselProps) {
         ))}
       </ul>
 
-      <div className="absolute flex justify-center w-full top-[calc(100%+1rem)]">
+      {/* Control Buttons Centered Below */}
+      <div className="absolute top-[calc(100%+1.5rem)] flex w-full items-center justify-center gap-3">
         <CarouselControl
           type="previous"
-          title="Go to previous slide"
+          title="Previous division"
           handleClick={handlePreviousClick}
         />
-
+        <span className="text-xs font-medium text-neutral-500">
+          {current + 1} / {slides.length}
+        </span>
         <CarouselControl
           type="next"
-          title="Go to next slide"
+          title="Next division"
           handleClick={handleNextClick}
         />
       </div>

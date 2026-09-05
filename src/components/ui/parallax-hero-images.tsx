@@ -1,5 +1,6 @@
 "use client";
-import React, { useEffect, useState, useMemo, useCallback, memo } from "react";
+
+import React, { useEffect, useMemo, memo } from "react";
 import {
   motion,
   useMotionValue,
@@ -17,9 +18,7 @@ type ImagePosition = {
     | "mid-left"
     | "mid-right"
     | "bottom-left"
-    | "bottom-right"
-    | "far-left"
-    | "far-right";
+    | "bottom-right";
   depth: number;
   delay: number;
 };
@@ -28,14 +27,12 @@ const positionStyles: Record<
   ImagePosition["position"],
   { top: string; left?: string; right?: string }
 > = {
-  "top-left": { top: "8%", left: "4%" },
-  "top-right": { top: "8%", right: "4%" },
-  "mid-left": { top: "38%", left: "6%" },
-  "mid-right": { top: "38%", right: "6%" },
-  "bottom-left": { top: "68%", left: "4%" },
-  "bottom-right": { top: "68%", right: "4%" },
-  "far-left": { top: "52%", left: "2%" },
-  "far-right": { top: "52%", right: "2%" },
+  "top-left": { top: "14%", left: "4%" },
+  "top-right": { top: "14%", right: "4%" },
+  "mid-left": { top: "44%", left: "3%" },
+  "mid-right": { top: "44%", right: "3%" },
+  "bottom-left": { top: "72%", left: "5%" },
+  "bottom-right": { top: "72%", right: "5%" },
 };
 
 const positionOrder: ImagePosition["position"][] = [
@@ -45,15 +42,13 @@ const positionOrder: ImagePosition["position"][] = [
   "mid-right",
   "bottom-left",
   "bottom-right",
-  "far-left",
-  "far-right",
 ];
 
 type DepthVariant = "default" | "edge-focus";
 
 const depthValuesByVariant: Record<DepthVariant, number[]> = {
-  default: [0.3, 0.35, 0.9, 0.85, 0.4, 0.45, 0.25, 0.2],
-  "edge-focus": [0.85, 0.9, 0.3, 0.35, 0.8, 0.85, 0.4, 0.45],
+  default: [0.35, 0.4, 0.85, 0.8, 0.45, 0.5],
+  "edge-focus": [0.85, 0.9, 0.35, 0.4, 0.8, 0.85],
 };
 
 const SPRING_CONFIG = { damping: 25, stiffness: 120 };
@@ -69,7 +64,7 @@ export const ParallaxHeroImages = ({
   images,
   className,
   imageClassName,
-  variant = "default",
+  variant = "edge-focus",
 }: ParallaxHeroImagesProps) => {
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
@@ -78,13 +73,14 @@ export const ParallaxHeroImages = ({
   const smoothMouseY = useSpring(mouseY, SPRING_CONFIG);
 
   const positions = useMemo(() => {
-    const limitedImages = images.slice(0, 8);
+    // Exactly 6 images as requested
+    const limitedImages = images.slice(0, 6);
     const depthValues = depthValuesByVariant[variant];
     return limitedImages.map((src, index) => ({
       src,
-      position: positionOrder[index],
-      depth: depthValues[index],
-      delay: index * 0.12,
+      position: positionOrder[index % positionOrder.length],
+      depth: depthValues[index % depthValues.length],
+      delay: index * 0.1,
     }));
   }, [images, variant]);
 
@@ -138,7 +134,7 @@ const ParallaxImage = memo(function ParallaxImage({
   smoothMouseX,
   smoothMouseY,
 }: ParallaxImageProps) {
-  const maxOffset = 40;
+  const maxOffset = 36;
 
   const translateX = useTransform(
     smoothMouseX,
@@ -165,10 +161,10 @@ const ParallaxImage = memo(function ParallaxImage({
         y: translateY,
         zIndex: Math.round(depth * 10),
       }}
-      initial={{ opacity: 0, filter: "blur(20px)", scale: 0.9 }}
+      initial={{ opacity: 0, filter: "blur(12px)", scale: 0.95 }}
       animate={{ opacity: 1, filter: "blur(0px)", scale: 1 }}
       transition={{
-        duration: 0.8,
+        duration: 0.7,
         delay: delay,
         ease: [0.25, 0.1, 0.25, 1],
       }}
@@ -179,7 +175,7 @@ const ParallaxImage = memo(function ParallaxImage({
         loading="lazy"
         decoding="async"
         className={cn(
-          "aspect-4/3 h-20 w-32 rounded-lg object-cover shadow-sm ring-1 ring-black/10 sm:h-40 sm:w-56 md:h-52 md:w-80 dark:ring-white/10",
+          "aspect-4/3 h-16 w-24 rounded-xl object-cover shadow-sm ring-1 ring-neutral-900/5 sm:h-32 sm:w-48 md:h-44 md:w-64",
           imageClassName,
         )}
       />

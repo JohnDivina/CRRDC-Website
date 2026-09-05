@@ -1,4 +1,5 @@
 "use client";
+
 import { cn } from "@/lib/utils";
 import { IconMenu2, IconX } from "@tabler/icons-react";
 import {
@@ -48,12 +49,12 @@ interface MobileNavMenuProps {
 }
 
 export const Navbar = ({ children, className }: NavbarProps) => {
-  const ref = useRef<HTMLDivElement>(null);
+  const ref = useRef<HTMLElement>(null);
   const { scrollY } = useScroll();
   const [visible, setVisible] = useState<boolean>(false);
 
   useMotionValueEvent(scrollY, "change", (latest) => {
-    if (latest > 50) {
+    if (latest > 40) {
       setVisible(true);
     } else {
       setVisible(false);
@@ -61,9 +62,12 @@ export const Navbar = ({ children, className }: NavbarProps) => {
   });
 
   return (
-    <motion.div
+    <motion.header
       ref={ref}
-      className={cn("sticky inset-x-0 top-0 z-40 w-full transition-all duration-300", className)}
+      className={cn(
+        "fixed inset-x-0 top-0 z-50 w-full transition-all duration-300",
+        className,
+      )}
     >
       {React.Children.map(children, (child) =>
         React.isValidElement(child)
@@ -73,7 +77,7 @@ export const Navbar = ({ children, className }: NavbarProps) => {
             )
           : child,
       )}
-    </motion.div>
+    </motion.header>
   );
 };
 
@@ -81,24 +85,29 @@ export const NavBody = ({ children, className, visible }: NavBodyProps) => {
   return (
     <motion.div
       animate={{
-        backdropFilter: visible ? "blur(12px)" : "none",
+        width: visible ? "68%" : "100%",
+        y: visible ? 12 : 0,
+        backgroundColor: visible
+          ? "rgba(255, 255, 255, 0.92)"
+          : "rgba(255, 255, 255, 0.8)",
+        backdropFilter: "blur(16px)",
         boxShadow: visible
-          ? "0 4px 20px -2px rgba(0, 0, 0, 0.08), 0 0 0 1px rgba(0, 135, 54, 0.15)"
-          : "0 1px 2px 0 rgba(0, 0, 0, 0.05)",
-        width: visible ? "75%" : "100%",
-        y: visible ? 8 : 0,
+          ? "0 10px 30px -10px rgba(0, 0, 0, 0.08), 0 0 0 1px rgba(0, 0, 0, 0.06)"
+          : "0 1px 0 0 rgba(0, 0, 0, 0.06)",
+        borderRadius: visible ? "9999px" : "0px",
+        paddingLeft: visible ? "1.5rem" : "2rem",
+        paddingRight: visible ? "1.5rem" : "2rem",
       }}
       transition={{
         type: "spring",
-        stiffness: 220,
-        damping: 40,
+        stiffness: 260,
+        damping: 32,
       }}
       style={{
-        minWidth: visible ? "760px" : "auto",
+        minWidth: visible ? "720px" : "100%",
       }}
       className={cn(
-        "relative z-[60] mx-auto hidden w-full max-w-7xl flex-row items-center justify-between self-start rounded-full px-5 py-2.5 transition-all lg:flex",
-        visible ? "bg-white/95 text-neutral-900 border border-[#008736]/20 shadow-md" : "bg-white text-neutral-900 border-b border-neutral-200/80",
+        "relative z-[60] mx-auto hidden max-w-7xl flex-row items-center justify-between py-3 lg:flex",
         className,
       )}
     >
@@ -111,10 +120,10 @@ export const NavItems = ({ items, className, onItemClick }: NavItemsProps) => {
   const [hovered, setHovered] = useState<number | null>(null);
 
   return (
-    <motion.div
+    <div
       onMouseLeave={() => setHovered(null)}
       className={cn(
-        "relative hidden flex-1 flex-row items-center justify-center space-x-1 text-xs font-semibold text-neutral-700 transition duration-200 lg:flex",
+        "relative hidden flex-1 flex-row items-center justify-center space-x-1 text-xs font-medium text-neutral-600 lg:flex",
         className,
       )}
     >
@@ -122,21 +131,21 @@ export const NavItems = ({ items, className, onItemClick }: NavItemsProps) => {
         <a
           onMouseEnter={() => setHovered(idx)}
           onClick={onItemClick}
-          className="relative px-3 py-1.5 rounded-full text-neutral-700 hover:text-[#008736] transition-colors"
+          className="relative px-3.5 py-1.5 text-neutral-600 transition-colors hover:text-neutral-900"
           key={`link-${idx}`}
           href={item.link}
         >
           {hovered === idx && (
             <motion.div
-              layoutId="hovered"
-              className="absolute inset-0 h-full w-full rounded-full bg-[#008736]/10"
-              transition={{ type: "spring", bounce: 0.2, duration: 0.4 }}
+              layoutId="hovered-pill"
+              className="absolute inset-0 h-full w-full rounded-full bg-neutral-100"
+              transition={{ type: "spring", bounce: 0.15, duration: 0.35 }}
             />
           )}
-          <span className="relative z-20 font-medium">{item.name}</span>
+          <span className="relative z-10">{item.name}</span>
         </a>
       ))}
-    </motion.div>
+    </div>
   );
 };
 
@@ -144,22 +153,24 @@ export const MobileNav = ({ children, className, visible }: MobileNavProps) => {
   return (
     <motion.div
       animate={{
-        backdropFilter: visible ? "blur(12px)" : "none",
+        width: visible ? "92%" : "100%",
+        y: visible ? 8 : 0,
+        borderRadius: visible ? "1rem" : "0px",
         boxShadow: visible
-          ? "0 4px 20px -2px rgba(0, 0, 0, 0.08), 0 0 0 1px rgba(0, 135, 54, 0.15)"
-          : "none",
-        width: visible ? "94%" : "100%",
-        borderRadius: visible ? "1rem" : "0",
-        y: visible ? 6 : 0,
+          ? "0 10px 25px -5px rgba(0, 0, 0, 0.08), 0 0 0 1px rgba(0, 0, 0, 0.06)"
+          : "0 1px 0 0 rgba(0, 0, 0, 0.06)",
+        backgroundColor: visible
+          ? "rgba(255, 255, 255, 0.95)"
+          : "rgba(255, 255, 255, 0.9)",
+        backdropFilter: "blur(14px)",
       }}
       transition={{
         type: "spring",
-        stiffness: 220,
-        damping: 40,
+        stiffness: 260,
+        damping: 32,
       }}
       className={cn(
-        "relative z-50 mx-auto flex w-full flex-col items-center justify-between bg-white px-4 py-2.5 lg:hidden border-b border-neutral-200",
-        visible && "bg-white/95 border border-[#008736]/20 shadow-md",
+        "relative z-50 mx-auto flex w-full flex-col items-center justify-between px-4 py-3 lg:hidden",
         className,
       )}
     >
@@ -188,18 +199,17 @@ export const MobileNavMenu = ({
   children,
   className,
   isOpen,
-  onClose,
 }: MobileNavMenuProps) => {
   return (
     <AnimatePresence>
       {isOpen && (
         <motion.div
-          initial={{ opacity: 0, y: -8 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: -8 }}
-          transition={{ duration: 0.2 }}
+          initial={{ opacity: 0, y: -8, scale: 0.98 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
+          exit={{ opacity: 0, y: -8, scale: 0.98 }}
+          transition={{ duration: 0.18, ease: "easeOut" }}
           className={cn(
-            "absolute inset-x-0 top-full mt-2 z-50 flex w-full flex-col items-start justify-start gap-3 rounded-xl bg-white p-6 shadow-xl border border-neutral-200",
+            "absolute inset-x-0 top-full mt-2 z-50 flex w-full flex-col items-start justify-start gap-3 rounded-2xl border border-neutral-200/80 bg-white/95 p-6 shadow-xl backdrop-blur-md",
             className,
           )}
         >
@@ -224,9 +234,9 @@ export const MobileNavToggle = ({
       className="p-1.5 rounded-lg text-neutral-800 hover:bg-neutral-100 transition-colors"
     >
       {isOpen ? (
-        <IconX className="w-6 h-6 text-neutral-900" />
+        <IconX className="w-5 h-5 text-neutral-900" />
       ) : (
-        <IconMenu2 className="w-6 h-6 text-neutral-900" />
+        <IconMenu2 className="w-5 h-5 text-neutral-900" />
       )}
     </button>
   );
@@ -241,30 +251,36 @@ export const NavbarLogo = ({
   children?: React.ReactNode;
   className?: string;
 }) => {
-  if (children) {
-    return (
-      <a
-        href={href}
-        className={cn("relative z-20 flex items-center space-x-2 text-sm font-normal text-neutral-900", className)}
-      >
-        {children}
-      </a>
-    );
-  }
-
   return (
     <a
       href={href}
-      className={cn("relative z-20 flex items-center space-x-2 px-2 py-1 text-sm font-normal text-neutral-900", className)}
+      className={cn(
+        "relative z-20 flex items-center gap-2.5 text-sm font-semibold text-neutral-900 transition-opacity hover:opacity-90",
+        className,
+      )}
     >
-      <img
-        src="/logos/crrdc-logo.png"
-        alt="CRRDC Logo"
-        width={32}
-        height={32}
-        className="object-contain"
-      />
-      <span className="font-bold text-[#008736]">CRRDC</span>
+      {children || (
+        <>
+          <div className="flex items-center gap-1.5">
+            <img
+              src="/logos/clsu-logo.png"
+              alt="CLSU Seal"
+              className="h-7 w-7 object-contain"
+            />
+            <img
+              src="/logos/crrdc-logo.png"
+              alt="CRRDC Logo"
+              className="h-7 w-7 object-contain"
+            />
+          </div>
+          <span className="font-bold tracking-tight text-neutral-900">
+            CRRDC
+            <span className="ml-1.5 hidden text-[11px] font-normal text-neutral-500 xl:inline">
+              CLSU
+            </span>
+          </span>
+        </>
+      )}
     </a>
   );
 };
@@ -287,17 +303,17 @@ export const NavbarButton = ({
   | React.ComponentPropsWithoutRef<"button">
 )) => {
   const baseStyles =
-    "px-3.5 py-1.5 rounded-full text-xs font-semibold relative cursor-pointer hover:-translate-y-0.5 transition duration-200 inline-flex items-center justify-center gap-1.5 text-center";
+    "px-4 py-1.5 rounded-full text-xs font-medium relative cursor-pointer active:scale-[0.98] transition-all duration-150 inline-flex items-center justify-center gap-1.5 text-center";
 
   const variantStyles = {
     primary:
-      "bg-[#008736] text-white hover:bg-[#124d26] shadow-sm shadow-[#008736]/20",
+      "bg-neutral-900 text-white hover:bg-neutral-800 shadow-sm",
     secondary:
-      "bg-[#008736]/10 text-[#008736] hover:bg-[#008736]/15 border border-[#008736]/20",
+      "bg-neutral-100 text-neutral-800 hover:bg-neutral-200/80 border border-neutral-200/70",
     dark:
       "bg-neutral-900 text-white hover:bg-neutral-800",
     gradient:
-      "bg-gradient-to-r from-[#008736] to-[#124d26] text-white shadow-sm",
+      "bg-[#008736] text-white hover:bg-[#00702d] shadow-sm",
   };
 
   return (

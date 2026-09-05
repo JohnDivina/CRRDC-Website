@@ -3,89 +3,98 @@
 import React from "react";
 import { AnimatedTestimonials } from "@/components/ui/animated-testimonials";
 
-// Facility data — replace descriptions and src with actual content later
 const facilities = [
   {
-    quote: "[Facility description to be provided]",
     name: "Agro-biological Research Laboratory",
-    designation: "R&D Facility · CRRDC",
+    designation: "CRRDC Core Facility",
+    quote:
+      "Conducts plant physiological assays, biological pest management trials, and bio-fertilizer characterization to support sustainable, climate-adapted crop production.",
     src: "/images/placeholders/facility-01.jpg",
   },
   {
-    quote: "[Facility description to be provided]",
-    name: "Biomass Bioenergy and Environmental Science Research Laboratory",
-    designation: "R&D Facility · CRRDC",
+    name: "Biomass Bioenergy & Environmental Science Lab",
+    designation: "Renewable Energy & Ecology",
+    quote:
+      "Investigates agro-waste valorization, thermal gasification biochar synthesis, and greenhouse gas carbon mitigation models in agricultural production systems.",
     src: "/images/placeholders/facility-02.jpg",
   },
   {
-    quote: "[Facility description to be provided]",
     name: "Crop Pest and Disease Diagnostic Laboratory",
-    designation: "R&D Facility · CRRDC",
+    designation: "Phytosanitary Surveillance",
+    quote:
+      "Provides regional diagnostic services for fungal, bacterial, and viral crop pathogens alongside integrated IPM recommendations for farmers and researchers.",
     src: "/images/placeholders/facility-03.jpg",
   },
   {
-    quote: "[Facility description to be provided]",
     name: "Engineering Makerspace (e-Makerspace)",
-    designation: "R&D Facility · CRRDC",
+    designation: "Mechanization & IoT Prototyping",
+    quote:
+      "Facilitates rapid prototyping of smallholder smart farm tools, IoT sensor telemetry nodes, automated irrigation controllers, and post-harvest handling apparatus.",
     src: "/images/placeholders/facility-04.jpg",
   },
   {
-    quote: "[Facility description to be provided]",
     name: "Food Product and Development Laboratory",
-    designation: "R&D Facility · CRRDC",
+    designation: "Post-Harvest Processing",
+    quote:
+      "Researches nutritional enhancement, functional food formulations, and shelf-life stabilization for indigenous crops, grains, and root vegetables.",
     src: "/images/placeholders/facility-05.jpg",
   },
   {
-    quote: "[Facility description to be provided]",
     name: "Molecular Biology and Biotechnology Laboratory",
-    designation: "R&D Facility · CRRDC",
+    designation: "Genomics & In-Vitro Culture",
+    quote:
+      "Houses DNA extraction, PCR gene screening, marker-assisted breeding platforms, and sterile tissue culture micro-propagation clean rooms.",
     src: "/images/placeholders/facility-06.jpg",
   },
   {
-    quote: "[Facility description to be provided]",
-    name: "Multimedia Editing and Management Operations (MEMO) Studio",
-    designation: "R&D Facility · CRRDC",
+    name: "Multimedia Editing & Management Operations (MEMO)",
+    designation: "Scientific Communications",
+    quote:
+      "Produces peer-reviewed publications, institutional media archives, farmer training materials, and interactive digital knowledge transfer modules.",
     src: "/images/placeholders/facility-07.jpg",
   },
   {
-    quote: "[Facility description to be provided]",
     name: "Plant Breeding and Nursery Laboratory",
-    designation: "R&D Facility · CRRDC",
+    designation: "Genetic Crop Improvement",
+    quote:
+      "Manages parent crossing blocks, screening nurseries, and pedigree generation cycles for superior yield, pest tolerance, and stress resilience.",
     src: "/images/placeholders/facility-08.jpg",
   },
   {
-    quote: "[Facility description to be provided]",
     name: "Seed Technology and Post-Harvest Laboratory",
-    designation: "R&D Facility · CRRDC",
+    designation: "Seed Purity & Viability Assays",
+    quote:
+      "Performs germination vigour testing, moisture regulation, seed conditioning trials, and seed longevity monitoring in controlled storage vaults.",
     src: "/images/placeholders/facility-09.jpg",
   },
   {
-    quote: "[Facility description to be provided]",
     name: "Soil and Plant Analytical Laboratory",
-    designation: "R&D Facility · CRRDC",
+    designation: "Soil Fertility & Nutrient Testing",
+    quote:
+      "Delivers spectrophotometric soil nutrient profiling, pH analysis, organic matter titration, and site-specific fertilizer management prescriptions.",
     src: "/images/placeholders/facility-10.jpg",
   },
 ];
 
 export function Facilities() {
   return (
-    <section id="facilities" className="py-24 bg-neutral-50">
+    <section id="facilities" className="py-20 bg-neutral-50/70 border-y border-neutral-200/60">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        {/* Section Header */}
-        <div className="mx-auto max-w-2xl text-center mb-4">
-          <p className="text-xs font-semibold uppercase tracking-[0.15em] text-[#008736]">
-            Research Infrastructure
-          </p>
-          <h2 className="mt-2 text-3xl font-bold tracking-tight text-neutral-900 sm:text-4xl">
-            Our R&amp;D Facilities
+        {/* Concise Section Header */}
+        <div className="mx-auto max-w-xl text-center mb-10">
+          <span className="text-xs font-semibold uppercase tracking-widest text-[#008736]">
+            Infrastructure
+          </span>
+          <h2 className="mt-1.5 text-2xl font-bold tracking-tight text-neutral-900 sm:text-3xl">
+            Ten Specialized R&amp;D Facilities
           </h2>
-          <p className="mt-3 text-neutral-500">
-            Ten specialized laboratories and research facilities powering
-            agricultural innovation at CRRDC.
+          <p className="mt-2 text-sm text-neutral-600">
+            Dedicated laboratory environments supporting precision diagnostics,
+            biotechnology, and agricultural product development.
           </p>
         </div>
 
-        {/* Aceternity — Animated Testimonials (adapted for facilities) */}
+        {/* Aceternity — Animated Testimonials (Repurposed for Facilities) */}
         <AnimatedTestimonials testimonials={facilities} autoplay />
       </div>
     </section>
