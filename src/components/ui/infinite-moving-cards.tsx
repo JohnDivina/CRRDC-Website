@@ -51,7 +51,7 @@ export const InfiniteMovingCards = ({
     }
   }, [direction, speed]);
 
-  // Momentary stop on scroll or interaction
+  // Momentary stop only when user actively interacts with the carousel
   const triggerMomentaryPause = useCallback((duration = 1600) => {
     setIsMomentarilyPaused(true);
     if (pauseTimerRef.current) {
@@ -62,24 +62,11 @@ export const InfiniteMovingCards = ({
     }, duration);
   }, []);
 
-  // Listen to window scroll so carousel momentarily stops when page is being scrolled
-  useEffect(() => {
-    const handleWindowScroll = () => {
-      triggerMomentaryPause(1400);
-    };
-
-    window.addEventListener("scroll", handleWindowScroll, { passive: true });
-    return () => {
-      window.removeEventListener("scroll", handleWindowScroll);
-      if (pauseTimerRef.current) {
-        clearTimeout(pauseTimerRef.current);
-      }
-    };
-  }, [triggerMomentaryPause]);
-
-  // Wheel event on carousel itself also triggers momentary pause
-  const handleWheel = () => {
-    triggerMomentaryPause(1800);
+  // Only pause on wheel if user is scrolling horizontally on the carousel
+  const handleWheel = (e: React.WheelEvent) => {
+    if (Math.abs(e.deltaX) > Math.abs(e.deltaY) && Math.abs(e.deltaX) > 6) {
+      triggerMomentaryPause(1800);
+    }
   };
 
   // Pointer Drag Handlers (supports both mouse and touch drag)
