@@ -15,7 +15,6 @@ export const InfiniteMovingCards = ({
   items,
   direction = "left",
   speed = "normal",
-  pauseOnHover = true,
   className,
 }: {
   items: DivisionSlide[];
@@ -27,48 +26,55 @@ export const InfiniteMovingCards = ({
   const containerRef = useRef<HTMLDivElement>(null);
   const scrollerRef = useRef<HTMLUListElement>(null);
 
-  // Interaction refs
-  const isInteractingRef = useRef(false);
-  const isHoveredRef = useRef(false);
-  const isDraggingRef = useRef(false);
-  const startXRef = useRef(0);
-  const startScrollLeftRef = useRef(0);
-  const hasDraggedRef = useRef(false);
+  // Internal float accumulator for subpixel precision so browser rounding never stalls auto-scroll
+  const scrollPosRef = useRef<number>(0);
+  const isUserScrollingRef = useRef<boolean>(false);
+  const isDraggingRef = useRef<boolean>(false);
+  const startXRef = useRef<number>(0);
+  const startScrollLeftRef = useRef<number>(0);
+  const hasDraggedRef = useRef<boolean>(false);
   const resumeTimerRef = useRef<NodeJS.Timeout | null>(null);
 
-  // 3-second delay after user stops scrolling before resuming auto-scroll
+  // 3-second delay after user finishes scrolling before auto-scroll resumes
   const RESUME_DELAY_MS = 3000;
 
-  const markUserInteracting = useCallback(() => {
-    isInteractingRef.current = true;
+  const pauseUserScroll = useCallback(() => {
+    isUserScrollingRef.current = true;
 
     if (resumeTimerRef.current) {
       clearTimeout(resumeTimerRef.current);
     }
 
     resumeTimerRef.current = setTimeout(() => {
-      isInteractingRef.current = false;
+      // Sync float position directly with DOM scroll position before resuming
+      if (containerRef.current) {
+        scrollPosRef.current = containerRef.current.scrollLeft;
+      }
+      isUserScrollingRef.current = false;
     }, RESUME_DELAY_MS);
   }, []);
 
-  // 3 sets of items for seamless infinite wrap-around
+  // 3 sets of items for seamless infinite bidirectional scrolling
   const triplicatedItems = [...items, ...items, ...items];
 
-  // Auto-scroll loop using requestAnimationFrame on native scrollLeft
+  // Guaranteed continuous auto-scroll using float accumulator on RAF
   useEffect(() => {
     const container = containerRef.current;
     if (!container) return;
 
-    // Initialize to middle set for infinite bidirectional scroll
-    const initScrollPosition = () => {
-      if (container.scrollWidth > 0 && container.scrollLeft === 0) {
-        container.scrollLeft = container.scrollWidth / 3;
+    // Initialize to middle set so user can scroll left or right infinitely
+    const initScrollPos = () => {
+      if (container.scrollWidth > 0 && scrollPosRef.current === 0) {
+        const startX = container.scrollWidth / 3;
+        container.scrollLeft = startX;
+        scrollPosRef.current = startX;
       }
     };
 
-    initScrollPosition();
-    const t1 = setTimeout(initScrollPosition, 100);
-    const t2 = setTimeout(initScrollPosition, 400);
+    initScrollPos();
+    const t1 = setTimeout(initScrollPos, 60);
+    const t2 = setTimeout(initScrollPos, 250);
+    const t3 = setTimeout(initScrollPos, 600);
 
     let lastTime = performance.now();
     let animationFrameId: number;
@@ -77,79 +83,89 @@ export const InfiniteMovingCards = ({
       speed === "fast" ? 54 : speed === "slow" ? 22 : 36;
     const sign = direction === "left" ? 1 : -1;
 
-    const animate = (time: number) => {
+    const step = (time: number) => {
       const dt = Math.min((time - lastTime) / 1000, 0.1);
       lastTime = time;
 
+      // Auto-scroll runs whenever the user is NOT actively scrolling or dragging
       if (
         container &&
-        !isInteractingRef.current &&
-        (!pauseOnHover || !isHoveredRef.current) &&
+        !isUserScrollingRef.current &&
         !isDraggingRef.current &&
         container.scrollWidth > 0
       ) {
-        container.scrollLeft += sign * pxPerSecond * dt;
+        scrollPosRef.current += sign * pxPerSecond * dt;
 
         const singleSetWidth = container.scrollWidth / 3;
         if (singleSetWidth > 0) {
-          if (container.scrollLeft >= singleSetWidth * 2) {
-            container.scrollLeft -= singleSetWidth;
-          } else if (container.scrollLeft <= 5) {
-            container.scrollLeft += singleSetWidth;
+          if (scrollPosRef.current >= singleSetWidth * 2) {
+            scrollPosRef.current -= singleSetWidth;
+          } else if (scrollPosRef.current <= 5) {
+            scrollPosRef.current += singleSetWidth;
           }
         }
+
+        // Apply float position to container
+        container.scrollLeft = scrollPosRef.current;
       }
 
-      animationFrameId = requestAnimationFrame(animate);
+      animationFrameId = requestAnimationFrame(step);
     };
 
-    animationFrameId = requestAnimationFrame(animate);
+    animationFrameId = requestAnimationFrame(step);
 
     return () => {
       cancelAnimationFrame(animationFrameId);
       clearTimeout(t1);
       clearTimeout(t2);
+      clearTimeout(t3);
       if (resumeTimerRef.current) {
         clearTimeout(resumeTimerRef.current);
       }
     };
-  }, [direction, speed, pauseOnHover]);
+  }, [direction, speed]);
 
-  // Scroll event: maintains infinite loop and refreshes the 3-second timer if user is scrolling
+  // Scroll event: maintains infinite boundaries and refreshes 3s timer if user is scrolling
   const handleScroll = useCallback(() => {
     const container = containerRef.current;
     if (!container || container.scrollWidth <= 0) return;
+
+    if (isUserScrollingRef.current || isDraggingRef.current) {
+      scrollPosRef.current = container.scrollLeft;
+      pauseUserScroll();
+    }
 
     const singleSetWidth = container.scrollWidth / 3;
     if (singleSetWidth > 0) {
       if (container.scrollLeft >= singleSetWidth * 2) {
         container.scrollLeft -= singleSetWidth;
+        scrollPosRef.current = container.scrollLeft;
       } else if (container.scrollLeft <= 5) {
         container.scrollLeft += singleSetWidth;
+        scrollPosRef.current = container.scrollLeft;
       }
     }
-
-    if (isInteractingRef.current) {
-      markUserInteracting();
-    }
-  }, [markUserInteracting]);
+  }, [pauseUserScroll]);
 
   // Wheel event: trackpad horizontal swipe & mouse wheel
   const handleWheel = useCallback(
     (e: React.WheelEvent<HTMLDivElement>) => {
-      markUserInteracting();
-
-      // If user scrolls using standard vertical mouse wheel over cards, assist with smooth horizontal scroll
-      if (Math.abs(e.deltaY) > Math.abs(e.deltaX) && Math.abs(e.deltaY) > 3) {
-        if (containerRef.current) {
-          containerRef.current.scrollLeft += e.deltaY * 0.85;
+      if (Math.abs(e.deltaX) > 2 || Math.abs(e.deltaY) > 2) {
+        const container = containerRef.current;
+        if (container) {
+          // If vertical wheel over carousel, smoothly translate to horizontal scroll
+          if (Math.abs(e.deltaY) > Math.abs(e.deltaX) && Math.abs(e.deltaY) > 3) {
+            container.scrollLeft += e.deltaY * 0.85;
+          }
+          scrollPosRef.current = container.scrollLeft;
         }
+        pauseUserScroll();
       }
     },
-    [markUserInteracting]
+    [pauseUserScroll]
   );
 
-  // Pointer / Mouse drag handlers
+  // Pointer / Mouse Drag Handlers
   const handlePointerDown = useCallback(
     (e: React.PointerEvent<HTMLDivElement>) => {
       if (!containerRef.current) return;
@@ -157,31 +173,35 @@ export const InfiniteMovingCards = ({
       hasDraggedRef.current = false;
       startXRef.current = e.pageX - containerRef.current.offsetLeft;
       startScrollLeftRef.current = containerRef.current.scrollLeft;
-      markUserInteracting();
+      pauseUserScroll();
     },
-    [markUserInteracting]
+    [pauseUserScroll]
   );
 
   const handlePointerMove = useCallback(
     (e: React.PointerEvent<HTMLDivElement>) => {
       if (!isDraggingRef.current || !containerRef.current) return;
       const x = e.pageX - containerRef.current.offsetLeft;
-      const walk = (x - startXRef.current) * 1.25;
+      const walk = (x - startXRef.current) * 1.3;
       if (Math.abs(walk) > 5) {
         hasDraggedRef.current = true;
       }
       containerRef.current.scrollLeft = startScrollLeftRef.current - walk;
-      markUserInteracting();
+      scrollPosRef.current = containerRef.current.scrollLeft;
+      pauseUserScroll();
     },
-    [markUserInteracting]
+    [pauseUserScroll]
   );
 
   const handlePointerUp = useCallback(() => {
     if (isDraggingRef.current) {
       isDraggingRef.current = false;
-      markUserInteracting(); // Begins the 3-second countdown from release
+      if (containerRef.current) {
+        scrollPosRef.current = containerRef.current.scrollLeft;
+      }
+      pauseUserScroll(); // Starts the 3-second countdown from release
     }
-  }, [markUserInteracting]);
+  }, [pauseUserScroll]);
 
   return (
     <div
@@ -203,16 +223,9 @@ export const InfiniteMovingCards = ({
         onPointerMove={handlePointerMove}
         onPointerUp={handlePointerUp}
         onPointerCancel={handlePointerUp}
-        onMouseEnter={() => {
-          isHoveredRef.current = true;
-        }}
-        onMouseLeave={() => {
-          isHoveredRef.current = false;
-          handlePointerUp();
-        }}
-        onTouchStart={markUserInteracting}
-        onTouchMove={markUserInteracting}
-        onTouchEnd={markUserInteracting}
+        onTouchStart={pauseUserScroll}
+        onTouchMove={pauseUserScroll}
+        onTouchEnd={pauseUserScroll}
         className="scroller relative z-20 flex w-full overflow-x-auto overflow-y-hidden select-none py-4 cursor-grab active:cursor-grabbing [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
         style={{
           WebkitOverflowScrolling: "touch",
