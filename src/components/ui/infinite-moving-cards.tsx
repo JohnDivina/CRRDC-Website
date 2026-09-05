@@ -43,11 +43,11 @@ export const InfiniteMovingCards = ({
       }
 
       if (speed === "fast") {
-        containerRef.current.style.setProperty("--animation-duration", "24s");
+        containerRef.current.style.setProperty("--animation-duration", "22s");
       } else if (speed === "normal") {
-        containerRef.current.style.setProperty("--animation-duration", "38s");
+        containerRef.current.style.setProperty("--animation-duration", "34s");
       } else {
-        containerRef.current.style.setProperty("--animation-duration", "60s");
+        containerRef.current.style.setProperty("--animation-duration", "55s");
       }
 
       setStart(true);
@@ -61,13 +61,13 @@ export const InfiniteMovingCards = ({
     <div
       ref={containerRef}
       className={cn(
-        "scroller relative z-20 w-full overflow-hidden [mask-image:linear-gradient(to_right,transparent,white_10%,white_90%,transparent)] [-webkit-mask-image:linear-gradient(to_right,transparent,white_10%,white_90%,transparent)]",
+        "scroller relative z-20 w-full overflow-hidden [mask-image:linear-gradient(to_right,transparent,white_18%,white_82%,transparent)] [-webkit-mask-image:linear-gradient(to_right,transparent,white_18%,white_82%,transparent)]",
         className,
       )}
     >
-      {/* Soft gradient edge fade overlays for universal browser rendering */}
-      <div className="pointer-events-none absolute left-0 top-0 bottom-0 z-30 w-16 sm:w-28 bg-gradient-to-r from-white via-white/85 to-transparent" />
-      <div className="pointer-events-none absolute right-0 top-0 bottom-0 z-30 w-16 sm:w-28 bg-gradient-to-l from-white via-white/85 to-transparent" />
+      {/* Deep soft gradient edge fade overlays matching the user-indicated boundary lines */}
+      <div className="pointer-events-none absolute left-0 top-0 bottom-0 z-30 w-28 sm:w-44 bg-gradient-to-r from-white via-white/90 to-transparent" />
+      <div className="pointer-events-none absolute right-0 top-0 bottom-0 z-30 w-28 sm:w-44 bg-gradient-to-l from-white via-white/90 to-transparent" />
 
       <ul
         ref={scrollerRef}
@@ -82,7 +82,7 @@ export const InfiniteMovingCards = ({
           return (
             <li
               key={`${item.title}-${idx}`}
-              className="group relative flex h-[280px] w-[310px] sm:h-[300px] sm:w-[380px] md:w-[420px] flex-shrink-0 flex-col justify-end overflow-hidden rounded-2xl border border-neutral-200/80 bg-neutral-900 p-6 shadow-md transition-all duration-300 hover:shadow-xl hover:border-neutral-300 cursor-pointer"
+              className="group relative flex h-[270px] w-[280px] sm:h-[285px] sm:w-[330px] md:w-[350px] flex-shrink-0 flex-col justify-end overflow-hidden rounded-2xl border border-neutral-200/80 bg-neutral-900 p-6 shadow-md transition-all duration-300 hover:shadow-xl hover:border-neutral-300 cursor-pointer"
             >
               {/* Background Image with subtle zoom on hover */}
               <div className="absolute inset-0 overflow-hidden">
@@ -100,7 +100,7 @@ export const InfiniteMovingCards = ({
                 <span className="inline-block rounded-full bg-black/40 px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-widest text-[#47c76a] backdrop-blur-xs border border-white/10">
                   Division 0{divisionNumber}
                 </span>
-                <h3 className="mt-2 text-lg font-bold leading-snug text-white sm:text-xl">
+                <h3 className="mt-2 text-base font-bold leading-snug text-white sm:text-lg md:text-xl">
                   {item.title}
                 </h3>
                 {item.description && (
