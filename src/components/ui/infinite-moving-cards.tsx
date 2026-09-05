@@ -228,13 +228,13 @@ export const InfiniteMovingCards = ({
   return (
     <div
       className={cn(
-        "relative z-20 w-full overflow-hidden [mask-image:linear-gradient(to_right,transparent,white_18%,white_82%,transparent)] [-webkit-mask-image:linear-gradient(to_right,transparent,white_18%,white_82%,transparent)]",
+        "relative z-20 w-full overflow-hidden [mask-image:linear-gradient(to_right,transparent,white_12%,white_88%,transparent)] [-webkit-mask-image:linear-gradient(to_right,transparent,white_12%,white_88%,transparent)]",
         className,
       )}
     >
-      {/* Deep soft gradient edge fade overlays pinned to outer boundaries */}
-      <div className="pointer-events-none absolute left-0 top-0 bottom-0 z-30 w-28 sm:w-44 bg-gradient-to-r from-white via-white/90 to-transparent" />
-      <div className="pointer-events-none absolute right-0 top-0 bottom-0 z-30 w-28 sm:w-44 bg-gradient-to-l from-white via-white/90 to-transparent" />
+      {/* Soft gradient edge fade overlays pinned to outer boundaries */}
+      <div className="pointer-events-none absolute left-0 top-0 bottom-0 z-30 w-20 sm:w-36 bg-gradient-to-r from-white via-white/85 to-transparent" />
+      <div className="pointer-events-none absolute right-0 top-0 bottom-0 z-30 w-20 sm:w-36 bg-gradient-to-l from-white via-white/85 to-transparent" />
 
       {/* Scrollable, draggable card container */}
       <div
@@ -271,7 +271,7 @@ export const InfiniteMovingCards = ({
             return (
               <li
                 key={`${item.title}-${idx}`}
-                className="group relative flex h-[270px] w-[280px] sm:h-[285px] sm:w-[330px] md:w-[350px] flex-shrink-0 flex-col justify-end overflow-hidden rounded-2xl border border-neutral-200/80 bg-neutral-900 p-6 shadow-md transition-all duration-300 hover:shadow-xl hover:border-neutral-300 cursor-pointer"
+                className="group relative flex h-[270px] w-[285px] sm:h-[285px] sm:w-[335px] md:w-[365px] flex-shrink-0 flex-col justify-end overflow-hidden rounded-2xl border border-neutral-200/80 bg-neutral-900 p-6 shadow-md transition-all duration-300 hover:shadow-xl hover:border-neutral-300 cursor-pointer"
                 onClick={(e) => {
                   if (hasDraggedRef.current) {
                     e.preventDefault();

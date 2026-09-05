@@ -54,7 +54,7 @@ export function Divisions() {
       </div>
 
       {/* Infinite Moving Cards with Faded Edges and Constant Smooth Motion */}
-      <div className="relative mx-auto max-w-5xl overflow-hidden px-4 sm:px-6">
+      <div className="relative mx-auto max-w-6xl overflow-hidden px-4 sm:px-6">
         <InfiniteMovingCards
           items={divisions}
           direction="left"
