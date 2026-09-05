@@ -126,3 +126,14 @@
 .paper-texture {
   background-color: var(--clsu-paper);
 }
+
+/* White shade texturized laboratory / infrastructure background */
+.infrastructure-texture {
+  background-color: #fafbf9;
+  background-image: 
+    radial-gradient(ellipse at 50% 35%, rgba(255, 255, 255, 0.95) 0%, rgba(246, 248, 245, 0.7) 100%),
+    radial-gradient(circle at 1px 1px, rgba(0, 0, 0, 0.045) 1px, transparent 0),
+    linear-gradient(to right, rgba(0, 135, 54, 0.02) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(0, 135, 54, 0.02) 1px, transparent 1px);
+  background-size: 100% 100%, 18px 18px, 36px 36px, 36px 36px;
+}

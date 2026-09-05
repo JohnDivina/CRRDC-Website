@@ -78,8 +78,38 @@ const facilities = [
 
 export function Facilities() {
   return (
-    <section id="facilities" className="py-20 bg-neutral-50/70 border-y border-neutral-200/60">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+    <section
+      id="facilities"
+      className="relative overflow-hidden py-20 infrastructure-texture border-y border-neutral-200/80"
+    >
+      {/* Subtle blueprint grid texture overlay */}
+      <div className="pointer-events-none absolute inset-0 opacity-40">
+        <svg className="h-full w-full" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <pattern
+              id="infrastructure-grid-pattern"
+              width="36"
+              height="36"
+              patternUnits="userSpaceOnUse"
+            >
+              <path
+                d="M 36 0 L 0 0 0 36"
+                fill="none"
+                stroke="rgba(0, 0, 0, 0.035)"
+                strokeWidth="0.75"
+              />
+              <circle cx="18" cy="18" r="0.75" fill="rgba(0, 135, 54, 0.08)" />
+            </pattern>
+          </defs>
+          <rect
+            width="100%"
+            height="100%"
+            fill="url(#infrastructure-grid-pattern)"
+          />
+        </svg>
+      </div>
+
+      <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         {/* Concise Section Header */}
         <div className="mx-auto max-w-xl text-center mb-10">
           <span className="text-xs font-semibold uppercase tracking-widest text-[#008736]">

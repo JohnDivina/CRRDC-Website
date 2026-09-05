@@ -1,7 +1,7 @@
 "use client";
 
 import { IconArrowNarrowRight } from "@tabler/icons-react";
-import { useState, useRef, useId, useEffect } from "react";
+import { useState, useRef, useId, useEffect, useCallback } from "react";
 
 interface SlideData {
   title: string;
@@ -13,10 +13,17 @@ interface SlideProps {
   slide: SlideData;
   index: number;
   current: number;
+  totalOriginal: number;
   handleSlideClick: (index: number) => void;
 }
 
-const Slide = ({ slide, index, current, handleSlideClick }: SlideProps) => {
+const Slide = ({
+  slide,
+  index,
+  current,
+  totalOriginal,
+  handleSlideClick,
+}: SlideProps) => {
   const slideRef = useRef<HTMLLIElement>(null);
 
   const xRef = useRef(0);
@@ -64,37 +71,37 @@ const Slide = ({ slide, index, current, handleSlideClick }: SlideProps) => {
   };
 
   const { src, button, title } = slide;
+  const isCurrent = current === index;
+  const divisionNum = (index % totalOriginal) + 1;
 
   return (
     <div className="[perspective:1000px] [transform-style:preserve-3d]">
       <li
         ref={slideRef}
-        className="relative z-10 flex h-[260px] w-[300px] flex-1 flex-col items-center justify-center text-center text-white opacity-100 transition-all duration-300 ease-in-out sm:h-[300px] sm:w-[420px] md:h-[320px] md:w-[460px] mx-2 sm:mx-3 cursor-pointer"
+        className="relative z-10 flex h-[260px] w-[300px] flex-1 flex-col items-center justify-center text-center text-white opacity-100 transition-all duration-300 ease-in-out sm:h-[300px] sm:w-[420px] md:h-[320px] md:w-[460px] mx-2 sm:mx-3 cursor-pointer select-none"
         onClick={() => handleSlideClick(index)}
         onMouseMove={handleMouseMove}
         onMouseLeave={handleMouseLeave}
         style={{
-          transform:
-            current !== index
-              ? "scale(0.96) rotateX(6deg)"
-              : "scale(1) rotateX(0deg)",
-          transition: "transform 0.5s cubic-bezier(0.4, 0, 0.2, 1)",
+          transform: !isCurrent
+            ? "scale(0.94) rotateX(5deg)"
+            : "scale(1) rotateX(0deg)",
+          transition: "transform 0.6s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.5s ease",
           transformOrigin: "bottom",
         }}
       >
         <div
           className="absolute inset-0 overflow-hidden rounded-2xl bg-neutral-900 shadow-lg transition-all duration-150 ease-out"
           style={{
-            transform:
-              current === index
-                ? "translate3d(calc(var(--x) / 35), calc(var(--y) / 35), 0)"
-                : "none",
+            transform: isCurrent
+              ? "translate3d(calc(var(--x) / 35), calc(var(--y) / 35), 0)"
+              : "none",
           }}
         >
           <img
             className="absolute inset-0 h-[115%] w-[115%] object-cover transition-opacity duration-500 ease-in-out"
             style={{
-              opacity: current === index ? 0.9 : 0.4,
+              opacity: isCurrent ? 0.92 : 0.45,
             }}
             alt={title}
             src={src}
@@ -102,16 +109,16 @@ const Slide = ({ slide, index, current, handleSlideClick }: SlideProps) => {
             loading="eager"
             decoding="sync"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/35 to-transparent" />
         </div>
 
         <article
           className={`relative z-20 px-6 py-4 transition-opacity duration-500 ease-in-out ${
-            current === index ? "opacity-100 visible" : "opacity-0 invisible"
+            isCurrent ? "opacity-100 visible" : "opacity-0 invisible"
           }`}
         >
           <span className="text-[10px] font-semibold uppercase tracking-widest text-[#47c76a]">
-            Division 0{index + 1}
+            Division 0{divisionNum}
           </span>
           <h3 className="mt-1 text-base font-semibold leading-snug sm:text-lg md:text-xl text-white">
             {title}
@@ -154,66 +161,152 @@ const CarouselControl = ({
 
 interface CarouselProps {
   slides: SlideData[];
+  autoplayInterval?: number;
 }
 
-export default function Carousel({ slides }: CarouselProps) {
-  const [current, setCurrent] = useState(0);
+export default function Carousel({
+  slides,
+  autoplayInterval = 3200,
+}: CarouselProps) {
+  const N = slides.length;
+  // 3 sets of slides for seamless forward/backward infinite rotation
+  const extendedSlides = [...slides, ...slides, ...slides];
 
-  const handlePreviousClick = () => {
-    const previous = current - 1;
-    setCurrent(previous < 0 ? slides.length - 1 : previous);
-  };
+  const [virtualIndex, setVirtualIndex] = useState(N); // Start at middle set (index 4)
+  const [withTransition, setWithTransition] = useState(true);
+  const [isHovered, setIsHovered] = useState(false);
 
-  const handleNextClick = () => {
-    const next = current + 1;
-    setCurrent(next === slides.length ? 0 : next);
-  };
+  const id = useId();
 
-  const handleSlideClick = (index: number) => {
-    if (current !== index) {
-      setCurrent(index);
+  const handleNextClick = useCallback(() => {
+    setWithTransition(true);
+    setVirtualIndex((prev) => prev + 1);
+  }, []);
+
+  const handlePreviousClick = useCallback(() => {
+    setWithTransition(true);
+    setVirtualIndex((prev) => prev - 1);
+  }, []);
+
+  const handleSlideClick = useCallback(
+    (index: number) => {
+      setWithTransition(true);
+      setVirtualIndex(index);
+    },
+    [],
+  );
+
+  // Silently reset loop boundary on transition end so rotation is 100% infinite and seamless
+  const handleTransitionEnd = (e: React.TransitionEvent<HTMLUListElement>) => {
+    if (e.target !== e.currentTarget) return;
+
+    if (virtualIndex >= 2 * N) {
+      setWithTransition(false);
+      setVirtualIndex(virtualIndex - N);
+    } else if (virtualIndex < N) {
+      setWithTransition(false);
+      setVirtualIndex(virtualIndex + N);
     }
   };
 
-  const id = useId();
+  // Re-enable transition on the next frame after boundary reset
+  useEffect(() => {
+    if (!withTransition) {
+      const raf1 = requestAnimationFrame(() => {
+        const raf2 = requestAnimationFrame(() => {
+          setWithTransition(true);
+        });
+        return () => cancelAnimationFrame(raf2);
+      });
+      return () => cancelAnimationFrame(raf1);
+    }
+  }, [withTransition]);
+
+  // Constantly rotating smoothly: auto-advance timer
+  useEffect(() => {
+    if (isHovered) return;
+
+    const timer = setInterval(() => {
+      handleNextClick();
+    }, autoplayInterval);
+
+    return () => clearInterval(timer);
+  }, [isHovered, autoplayInterval, handleNextClick]);
+
+  const activeDivision = ((virtualIndex % N) + N) % N;
 
   return (
     <div
       className="relative mx-auto h-[260px] w-[300px] sm:h-[300px] sm:w-[420px] md:h-[320px] md:w-[460px]"
       aria-labelledby={`carousel-heading-${id}`}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
     >
       <ul
-        className="absolute flex mx-[-8px] sm:mx-[-12px] transition-transform duration-700 ease-out"
+        onTransitionEnd={handleTransitionEnd}
+        className="absolute flex mx-[-8px] sm:mx-[-12px]"
         style={{
-          transform: `translateX(-${current * (100 / slides.length)}%)`,
+          transform: `translateX(-${virtualIndex * (100 / extendedSlides.length)}%)`,
+          transition: withTransition
+            ? "transform 0.75s cubic-bezier(0.16, 1, 0.3, 1)"
+            : "none",
         }}
       >
-        {slides.map((slide, index) => (
+        {extendedSlides.map((slide, index) => (
           <Slide
-            key={index}
+            key={`${slide.title}-${index}`}
             slide={slide}
             index={index}
-            current={current}
+            current={virtualIndex}
+            totalOriginal={N}
             handleSlideClick={handleSlideClick}
           />
         ))}
       </ul>
 
-      {/* Control Buttons Centered Below */}
-      <div className="absolute top-[calc(100%+1.5rem)] flex w-full items-center justify-center gap-3">
-        <CarouselControl
-          type="previous"
-          title="Previous division"
-          handleClick={handlePreviousClick}
-        />
-        <span className="text-xs font-medium text-neutral-500">
-          {current + 1} / {slides.length}
+      {/* Control Buttons & Progress Dots Centered Below */}
+      <div className="absolute top-[calc(100%+1.5rem)] flex w-full flex-col items-center justify-center gap-3">
+        <div className="flex items-center gap-3">
+          <CarouselControl
+            type="previous"
+            title="Previous division"
+            handleClick={handlePreviousClick}
+          />
+
+          {/* Interactive Division Dots */}
+          <div className="flex items-center gap-1.5 px-2">
+            {slides.map((_, idx) => {
+              const isActive = activeDivision === idx;
+              return (
+                <button
+                  key={idx}
+                  onClick={() => {
+                    setWithTransition(true);
+                    setVirtualIndex(N + idx);
+                  }}
+                  aria-label={`Go to Division 0${idx + 1}`}
+                  className={`h-2 rounded-full transition-all duration-300 ${
+                    isActive
+                      ? "w-6 bg-[#008736]"
+                      : "w-2 bg-neutral-300 hover:bg-neutral-400"
+                  }`}
+                />
+              );
+            })}
+          </div>
+
+          <CarouselControl
+            type="next"
+            title="Next division"
+            handleClick={handleNextClick}
+          />
+        </div>
+
+        {/* Live Active Status Indicator */}
+        <span className="text-[11px] font-medium text-neutral-400">
+          Division 0{activeDivision + 1} of 0{N}
+          {isHovered && <span className="ml-1 text-[#008736]">(Paused)</span>}
         </span>
-        <CarouselControl
-          type="next"
-          title="Next division"
-          handleClick={handleNextClick}
-        />
       </div>
     </div>
   );
