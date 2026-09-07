@@ -19,8 +19,11 @@ export const metadata: Metadata = {
   ],
   authors: [{ name: "Central Luzon State University" }],
   icons: {
-    icon: "/logos/clsu-logo.png",
-    apple: "/logos/clsu-logo.png",
+    icon: [
+      { url: "/logos/crrdc-logo.png", type: "image/png" },
+    ],
+    shortcut: "/logos/crrdc-logo.png",
+    apple: "/logos/crrdc-logo.png",
   },
   openGraph: {
     title: "Crops and Resources Research and Development Center | CLSU",
