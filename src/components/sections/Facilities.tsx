@@ -74,6 +74,13 @@ const facilities = [
       "Delivers spectrophotometric soil nutrient profiling, pH analysis, organic matter titration, and site-specific fertilizer management prescriptions.",
     src: "/images/facilities/soil-and-plant-analytical-laboratory.jpg",
   },
+  {
+    name: "Cold Storage Facility",
+    designation: "Post-Harvest Preservation & Cold Chain",
+    quote:
+      "Temperature- and atmosphere-controlled cold storage chambers dedicated to post-harvest crop preservation, seed bank longevity, and perishable commodity shelf-life extension.",
+    src: "/images/facilities/cold-storage-facility.jpg",
+  },
 ];
 
 export function Facilities() {
@@ -116,11 +123,11 @@ export function Facilities() {
             Infrastructure
           </span>
           <h2 className="mt-1.5 text-2xl font-bold tracking-tight text-neutral-900 sm:text-3xl">
-            Ten Specialized R&amp;D Facilities
+            Specialized R&amp;D Facilities &amp; Infrastructure
           </h2>
           <p className="mt-2 text-sm text-neutral-600">
             Dedicated laboratory environments supporting precision diagnostics,
-            biotechnology, and agricultural product development.
+            biotechnology, post-harvest preservation, and agricultural development.
           </p>
         </div>
 

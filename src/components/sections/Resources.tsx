@@ -63,6 +63,16 @@ const resources: ResourceItem[] = [
     icon: "/images/resources/agroclimate-early-warning-bulletin.jpg",
     status: "Beta",
   },
+  {
+    name: "Cold Storage Facility",
+    category: "Post-Harvest & Cold Chain",
+    description:
+      "Controlled atmosphere cold storage chambers supporting perishable crop shelf-life extension and certified seed bank reserves.",
+    href: "https://crrdc.vercel.app",
+    icon: "/images/resources/cold-storage-facility.jpg",
+    isExternal: true,
+    status: "Active",
+  },
 ];
 
 export function Resources() {

@@ -76,4 +76,11 @@ export const facilitiesTestimonialsData: FacilityItem[] = [
       "Certified analytical testing facility delivering chemical and physical assays for soil fertility diagnosis, irrigation water quality evaluation, and plant tissue nutrient quantification. [Full technical specifications and equipment inventory to be provided].",
     src: "/images/facilities/soil-and-plant-analytical-laboratory.jpg",
   },
+  {
+    name: "Cold Storage Facility",
+    designation: "R&D Facility — Central Luzon State University",
+    quote:
+      "Controlled atmosphere cold storage complex supporting post-harvest loss reduction, seed bank longevity, physiological preservation trials, and commercial buffer-stock holding for regional growers.",
+    src: "/images/facilities/cold-storage-facility.jpg",
+  },
 ];
