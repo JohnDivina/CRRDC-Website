@@ -26,13 +26,6 @@ const facilities = [
     src: "/images/facilities/crop-pest-and-disease-diagnostic-laboratory.jpg",
   },
   {
-    name: "Engineering Makerspace (e-Makerspace)",
-    designation: "Mechanization & IoT Prototyping",
-    quote:
-      "Facilitates rapid prototyping of smallholder smart farm tools, IoT sensor telemetry nodes, automated irrigation controllers, and post-harvest handling apparatus.",
-    src: "/images/facilities/engineering-makerspace.jpg",
-  },
-  {
     name: "Food Product and Development Laboratory",
     designation: "Post-Harvest Processing",
     quote:

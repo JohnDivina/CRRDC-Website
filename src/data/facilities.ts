@@ -28,13 +28,6 @@ export const facilitiesTestimonialsData: FacilityItem[] = [
     src: "/images/facilities/crop-pest-and-disease-diagnostic-laboratory.jpg",
   },
   {
-    name: "Engineering Makerspace (e-Makerspace)",
-    designation: "R&D Facility — Central Luzon State University",
-    quote:
-      "Rapid prototyping and agricultural hardware innovation hub equipped for digital design, sensor fabrication, machinery implement modification, and IoT farm automation testing. [Full technical specifications and equipment inventory to be provided].",
-    src: "/images/facilities/engineering-makerspace.jpg",
-  },
-  {
     name: "Food Product and Development Laboratory",
     designation: "R&D Facility — Central Luzon State University",
     quote:
