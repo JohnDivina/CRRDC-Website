@@ -9,28 +9,28 @@ const divisions: DivisionSlide[] = [
     description:
       "Modern ICT systems, peer-reviewed knowledge synthesis, scientific media dissemination, and digital knowledge platforms for farmers.",
     button: "Explore Division",
-    src: "/images/placeholders/division-01.jpg",
+    src: "/images/divisions/information-and-communications-division.jpg",
   },
   {
     title: "Crop Management Division",
     description:
       "Integrated pest diagnostics, climate-smart agronomy protocols, precision nutrient management, and soil ecology sustainability.",
     button: "Explore Division",
-    src: "/images/placeholders/division-02.jpg",
+    src: "/images/divisions/crop-management-division.jpg",
   },
   {
     title: "Farm Resources and Post-harvest Division",
     description:
       "Post-harvest engineering, bioenergy technology, automated storage preservation, and mechanized prototype fabrication.",
     button: "Explore Division",
-    src: "/images/placeholders/division-03.jpg",
+    src: "/images/divisions/farm-resources-and-post-harvest-division.jpg",
   },
   {
     title: "Plant Breeding and Genetic Resources Division",
     description:
       "Breeder seed development, marker-assisted molecular breeding, germplasm indexing, and stress-tolerant crop cultivars.",
     button: "Explore Division",
-    src: "/images/placeholders/division-04.jpg",
+    src: "/images/divisions/plant-breeding-and-genetic-resources-division.jpg",
   },
 ];
 

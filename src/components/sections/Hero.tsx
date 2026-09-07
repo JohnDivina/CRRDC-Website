@@ -5,12 +5,12 @@ import { ParallaxHeroImages } from "@/components/ui/parallax-hero-images";
 
 // Curated 6 pictures for the hero parallax
 const heroImages = [
-  "/images/placeholders/hero-01.jpg",
-  "/images/placeholders/hero-02.jpg",
-  "/images/placeholders/hero-03.jpg",
-  "/images/placeholders/hero-04.jpg",
-  "/images/placeholders/hero-05.jpg",
-  "/images/placeholders/hero-06.jpg",
+  "/images/hero/hero-01.jpg",
+  "/images/hero/hero-02.jpg",
+  "/images/hero/hero-03.jpg",
+  "/images/hero/hero-04.jpg",
+  "/images/hero/hero-05.jpg",
+  "/images/hero/hero-06.jpg",
 ];
 
 export function Hero() {

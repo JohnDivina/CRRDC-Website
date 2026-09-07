@@ -22,7 +22,7 @@ const resources: ResourceItem[] = [
     description:
       "CRRDC's primary operational management system for tracking institutional commodities, research assets, and supply logistics.",
     href: "https://crrdc.vercel.app",
-    icon: "/images/placeholders/system-resursee.jpg",
+    icon: "/images/resources/resursee-equipment-booking-portal.jpg",
     isExternal: true,
     status: "Active",
   },
@@ -32,7 +32,7 @@ const resources: ResourceItem[] = [
     description:
       "Commodity, certified seed, chemical inventory, and transactional records management for CRRDC production divisions.",
     href: "https://crrdc.vercel.app",
-    icon: "/images/placeholders/system-inventory.jpg",
+    icon: "/images/resources/inventory-and-supplies-management-system.jpg",
     isExternal: true,
     status: "Active",
   },
@@ -42,7 +42,7 @@ const resources: ResourceItem[] = [
     description:
       "Comprehensive tracking database for certified breeder, foundation, and registered crop germplasm seedlots.",
     href: "#",
-    icon: "/images/placeholders/system-seed.jpg",
+    icon: "/images/resources/central-luzon-seed-registry-portal.jpg",
     status: "Internal Access",
   },
   {
@@ -51,7 +51,7 @@ const resources: ResourceItem[] = [
     description:
       "Online instrument booking, laboratory facility reservation, and safety clearance management for research personnel.",
     href: "#",
-    icon: "/images/placeholders/system-labaccess.jpg",
+    icon: "/images/resources/labaccess-equipment-calibration-platform.jpg",
     status: "Internal Access",
   },
   {
@@ -60,7 +60,7 @@ const resources: ResourceItem[] = [
     description:
       "Microclimate telemetry network integrating local weather station sensors, soil moisture data, and seasonal crop advisories.",
     href: "#",
-    icon: "/images/placeholders/system-agroclimate.jpg",
+    icon: "/images/resources/agroclimate-early-warning-bulletin.jpg",
     status: "Beta",
   },
 ];

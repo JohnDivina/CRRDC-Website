@@ -9,70 +9,70 @@ const facilities = [
     designation: "CRRDC Core Facility",
     quote:
       "Conducts plant physiological assays, biological pest management trials, and bio-fertilizer characterization to support sustainable, climate-adapted crop production.",
-    src: "/images/placeholders/facility-01.jpg",
+    src: "/images/facilities/agro-biological-research-laboratory.jpg",
   },
   {
     name: "Biomass Bioenergy & Environmental Science Lab",
     designation: "Renewable Energy & Ecology",
     quote:
       "Investigates agro-waste valorization, thermal gasification biochar synthesis, and greenhouse gas carbon mitigation models in agricultural production systems.",
-    src: "/images/placeholders/facility-02.jpg",
+    src: "/images/facilities/biomass-bioenergy-and-environmental-science-laboratory.jpg",
   },
   {
     name: "Crop Pest and Disease Diagnostic Laboratory",
     designation: "Phytosanitary Surveillance",
     quote:
       "Provides regional diagnostic services for fungal, bacterial, and viral crop pathogens alongside integrated IPM recommendations for farmers and researchers.",
-    src: "/images/placeholders/facility-03.jpg",
+    src: "/images/facilities/crop-pest-and-disease-diagnostic-laboratory.jpg",
   },
   {
     name: "Engineering Makerspace (e-Makerspace)",
     designation: "Mechanization & IoT Prototyping",
     quote:
       "Facilitates rapid prototyping of smallholder smart farm tools, IoT sensor telemetry nodes, automated irrigation controllers, and post-harvest handling apparatus.",
-    src: "/images/placeholders/facility-04.jpg",
+    src: "/images/facilities/engineering-makerspace.jpg",
   },
   {
     name: "Food Product and Development Laboratory",
     designation: "Post-Harvest Processing",
     quote:
       "Researches nutritional enhancement, functional food formulations, and shelf-life stabilization for indigenous crops, grains, and root vegetables.",
-    src: "/images/placeholders/facility-05.jpg",
+    src: "/images/facilities/food-product-and-development-laboratory.jpg",
   },
   {
     name: "Molecular Biology and Biotechnology Laboratory",
     designation: "Genomics & In-Vitro Culture",
     quote:
       "Houses DNA extraction, PCR gene screening, marker-assisted breeding platforms, and sterile tissue culture micro-propagation clean rooms.",
-    src: "/images/placeholders/facility-06.jpg",
+    src: "/images/facilities/molecular-biology-and-biotechnology-laboratory.jpg",
   },
   {
     name: "Multimedia Editing & Management Operations (MEMO)",
     designation: "Scientific Communications",
     quote:
       "Produces peer-reviewed publications, institutional media archives, farmer training materials, and interactive digital knowledge transfer modules.",
-    src: "/images/placeholders/facility-07.jpg",
+    src: "/images/facilities/multimedia-editing-and-management-operations-memo.jpg",
   },
   {
     name: "Plant Breeding and Nursery Laboratory",
     designation: "Genetic Crop Improvement",
     quote:
       "Manages parent crossing blocks, screening nurseries, and pedigree generation cycles for superior yield, pest tolerance, and stress resilience.",
-    src: "/images/placeholders/facility-08.jpg",
+    src: "/images/facilities/plant-breeding-and-nursery-laboratory.jpg",
   },
   {
     name: "Seed Technology and Post-Harvest Laboratory",
     designation: "Seed Purity & Viability Assays",
     quote:
       "Performs germination vigour testing, moisture regulation, seed conditioning trials, and seed longevity monitoring in controlled storage vaults.",
-    src: "/images/placeholders/facility-09.jpg",
+    src: "/images/facilities/seed-technology-and-post-harvest-laboratory.jpg",
   },
   {
     name: "Soil and Plant Analytical Laboratory",
     designation: "Soil Fertility & Nutrient Testing",
     quote:
       "Delivers spectrophotometric soil nutrient profiling, pH analysis, organic matter titration, and site-specific fertilizer management prescriptions.",
-    src: "/images/placeholders/facility-10.jpg",
+    src: "/images/facilities/soil-and-plant-analytical-laboratory.jpg",
   },
 ];
 

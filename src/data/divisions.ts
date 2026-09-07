@@ -20,7 +20,7 @@ export const divisionsData: Division[] = [
     subtitle: "Digital Agriculture, Public Information & Knowledge Management",
     description:
       "Spearheads digital systems, agricultural media development, scientific publication dissemination, and institutional ICT infrastructure across CRRDC. Operates multimedia studios, information portals, and farmer-targeted communication campaigns.",
-    src: "/images/placeholders/division-01.jpg",
+    src: "/images/divisions/information-and-communications-division.jpg",
     button: "Explore Division",
     headTitle: "Division Chief",
     headNamePlaceholder: "[Division Chief, Ph.D. — Information & Communications]",
@@ -44,7 +44,7 @@ export const divisionsData: Division[] = [
     subtitle: "Precision Agronomy, Crop Protection & Agro-Ecological Systems",
     description:
       "Focuses on applied crop management, integrated pest and disease diagnosis, soil fertility evaluation, and sustainable cultural practices tailored to climate-resilient farming in Central Luzon.",
-    src: "/images/placeholders/division-02.jpg",
+    src: "/images/divisions/crop-management-division.jpg",
     button: "Explore Division",
     headTitle: "Division Chief",
     headNamePlaceholder: "[Division Chief, Ph.D. — Crop Management]",
@@ -68,7 +68,7 @@ export const divisionsData: Division[] = [
     subtitle: "Post-Harvest Technology, Farm Mechanization & Resource Valorization",
     description:
       "Pioneers engineering and technological solutions to eliminate post-harvest losses, design efficient processing equipment, and convert agricultural by-products and biomass into renewable bioenergy and value-added goods.",
-    src: "/images/placeholders/division-03.jpg",
+    src: "/images/divisions/farm-resources-and-post-harvest-division.jpg",
     button: "Explore Division",
     headTitle: "Division Chief",
     headNamePlaceholder: "[Division Chief, M.Sc. — Farm Resources & Post-harvest]",
@@ -92,7 +92,7 @@ export const divisionsData: Division[] = [
     subtitle: "Varietal Improvement, Marker-Assisted Selection & Germplasm Conservation",
     description:
       "Drives the core genetic research mandate of CRRDC. Breeds superior, drought-resilient, pest-resistant crop cultivars, conducts marker-assisted selection, and conserves vital plant genetic resources and landraces.",
-    src: "/images/placeholders/division-04.jpg",
+    src: "/images/divisions/plant-breeding-and-genetic-resources-division.jpg",
     button: "Explore Division",
     headTitle: "Division Chief",
     headNamePlaceholder: "[Division Chief, Ph.D. — Plant Breeding & Genetics]",
