@@ -1,11 +1,13 @@
 "use client";
 
 import React, { useEffect, useMemo, memo } from "react";
+import Image from "next/image";
 import {
   motion,
   useMotionValue,
   useSpring,
   useTransform,
+  useReducedMotion,
   MotionValue,
 } from "motion/react";
 import { cn } from "@/lib/utils";
@@ -84,7 +86,11 @@ export const ParallaxHeroImages = ({
     }));
   }, [images, variant]);
 
+  const prefersReducedMotion = useReducedMotion();
+
   useEffect(() => {
+    if (prefersReducedMotion) return;
+
     const handleMouseMove = (e: MouseEvent) => {
       const x = (e.clientX / window.innerWidth) * 2 - 1;
       const y = (e.clientY / window.innerHeight) * 2 - 1;
@@ -94,7 +100,7 @@ export const ParallaxHeroImages = ({
 
     window.addEventListener("mousemove", handleMouseMove);
     return () => window.removeEventListener("mousemove", handleMouseMove);
-  }, [mouseX, mouseY]);
+  }, [mouseX, mouseY, prefersReducedMotion]);
 
   return (
     <div
@@ -149,10 +155,11 @@ const ParallaxImage = memo(function ParallaxImage({
   );
 
   const posStyle = positionStyles[position];
+  const isMid = position === "mid-left" || position === "mid-right";
 
   return (
     <motion.div
-      className="absolute"
+      className={cn("absolute", isMid && "hidden sm:block")}
       style={{
         top: posStyle.top,
         left: posStyle.left,
@@ -169,16 +176,20 @@ const ParallaxImage = memo(function ParallaxImage({
         ease: [0.25, 0.1, 0.25, 1],
       }}
     >
-      <img
-        src={src}
-        alt=""
-        loading="lazy"
-        decoding="async"
+      <div
         className={cn(
-          "aspect-4/3 h-16 w-24 rounded-xl object-cover shadow-sm ring-1 ring-neutral-900/5 sm:h-32 sm:w-48 md:h-44 md:w-64",
+          "relative aspect-4/3 h-16 w-24 overflow-hidden rounded-xl shadow-sm ring-1 ring-neutral-900/5 sm:h-32 sm:w-48 md:h-44 md:w-64",
           imageClassName,
         )}
-      />
+      >
+        <Image
+          src={src}
+          alt=""
+          fill
+          sizes="(max-width: 640px) 96px, (max-width: 768px) 192px, 256px"
+          className="object-cover"
+        />
+      </div>
     </motion.div>
   );
 });

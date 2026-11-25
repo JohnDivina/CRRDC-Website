@@ -44,10 +44,10 @@
 }
 
 :root {
-  /* Apple System Typography Stack */
-  --font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-  --font-display: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-  --font-mono: "SF Mono", Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  /* Official Apple System Typography Stack */
+  --font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "Helvetica Neue", Arial, sans-serif;
+  --font-display: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue", Arial, sans-serif;
+  --font-mono: "SF Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
 
   /* Official CLSU Brand Tokens */
   --clsu-green: #008736;
@@ -150,4 +150,347 @@
 
 .animate-scroll {
   animation: scroll var(--animation-duration, 35s) var(--animation-direction, forwards) linear infinite;
+}
+
+/* ============================================================
+ * CRRDC SHOP — Unified CLSU Institutional Palette & Apple Font
+ * ============================================================ */
+:root {
+  /* Paper & ink — identical to crrdc-website */
+  --color-paper:          #fbfcf9;
+  --color-paper-2:        #f4f6f1;
+  --color-paper-3:        #e8ede3;
+  --color-ink:            #18231c;
+  --color-ink-2:          #526356;
+  --color-ink-3:          #6b7c70;
+
+  /* Brand greens — identical to crrdc-website */
+  --color-primary:        #008736;
+  --color-primary-dark:   #0b1c11;
+  --color-heading:        #18231c;
+  --color-primary-hover:  #124d26;
+  --color-primary-fg:     #ffffff;
+
+  /* High-contrast monochrome accents (anti-slop) */
+  --color-accent:         #18231c;
+  --color-accent-dim:     #526356;
+  --color-accent-fg:      #ffffff;
+
+  /* Functional */
+  --color-border:         #e2e7dc;
+  --color-border-strong:  #d8dfd1;
+  --color-focus:          #008736;
+  --color-error:          #dc2626;
+  --color-success:        #008736;
+  --color-warning:        #526356;
+
+  /* Official Apple Typography */
+  --font-body:     -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "Helvetica Neue", Arial, sans-serif;
+
+  /* Type scale */
+  --text-xs:        0.75rem;
+  --text-sm:        0.875rem;
+  --text-base:      1rem;
+  --text-lg:        1.125rem;
+  --text-xl:        1.25rem;
+  --text-2xl:       1.5rem;
+  --text-3xl:       1.875rem;
+  --text-4xl:       2.25rem;
+  --text-display-s: 3rem;
+  --text-display:   3.75rem;
+
+  /* Spacing (4pt scale) */
+  --space-1:   0.25rem;
+  --space-2:   0.5rem;
+  --space-3:   0.75rem;
+  --space-4:   1rem;
+  --space-5:   1.25rem;
+  --space-6:   1.5rem;
+  --space-7:   1.75rem;
+  --space-8:   2rem;
+  --space-10:  2.5rem;
+  --space-12:  3rem;
+  --space-16:  4rem;
+  --space-20:  5rem;
+  --space-24:  6rem;
+  --space-32:  8rem;
+  --space-sm:  var(--space-4);
+  --space-md:  var(--space-8);
+  --space-lg:  var(--space-16);
+  --space-xl:  var(--space-24);
+  --space-2xl: var(--space-32);
+  --space-3xl: 10rem;
+
+  /* Radius */
+  --radius-sm:   0.25rem;
+  --radius-md:   0.5rem;
+  --radius-lg:   0.75rem;
+  --radius-xl:   1rem;
+  --radius-full: 9999px;
+
+  /* Motion */
+  --dur-fast:    120ms;
+  --dur-base:    200ms;
+  --dur-slow:    350ms;
+  --ease-out:    cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in:     cubic-bezier(0.4, 0, 1, 1);
+  --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* Layout */
+  --container-max:  1200px;
+  --container-text: 720px;
+  --gutter:         clamp(1rem, 4vw, 3rem);
+}
+
+.public-layout {
+  padding-top: 4.5rem;
+  min-height: 100vh;
+  background-color: var(--color-paper);
+  color: var(--color-ink);
+  font-family: var(--font-body);
+}
+
+@media (max-width: 768px) {
+  body:has(.storefront-page-container) .footer {
+    display: none !important;
+  }
+}
+
+/* ─── Admin Layout Architecture ────────────────────────────── */
+html:has(.admin-shell),
+body:has(.admin-shell) {
+  overflow-x: hidden;
+  height: 100%;
+}
+
+.admin-shell {
+  display: flex;
+  min-height: 100vh;
+  min-height: 100dvh;
+  background-color: var(--color-paper-2);
+  position: relative;
+  width: 100%;
+  transform: none !important;
+  animation: none !important;
+}
+
+.admin-mobile-header {
+  display: none;
+  align-items: center;
+  gap: var(--space-4);
+  padding: var(--space-3) var(--gutter);
+  background-color: var(--color-primary-dark);
+  color: var(--color-primary-fg);
+  position: sticky;
+  top: 0;
+  z-index: 90;
+}
+.admin-mobile-toggle {
+  background: transparent;
+  border: none;
+  color: var(--color-primary-fg);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px;
+}
+.admin-mobile-title {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: var(--text-lg);
+  color: var(--color-accent);
+}
+
+.admin-sidebar-overlay {
+  display: none;
+}
+
+.admin-sidebar {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  bottom: 0 !important;
+  width: 260px;
+  height: 100vh !important;
+  height: 100dvh !important;
+  flex-shrink: 0;
+  background-color: var(--color-primary-dark);
+  display: flex;
+  flex-direction: column;
+  border-right: 1px solid oklch(from var(--color-primary-dark) calc(l - 0.08) c h);
+  transition: transform var(--dur-slow) var(--ease-out);
+  z-index: 100;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+.admin-sidebar__header {
+  padding: var(--space-5) var(--space-6);
+  border-bottom: 1px solid oklch(from var(--color-primary-dark) calc(l - 0.08) c h);
+}
+.admin-sidebar__brand {
+  text-decoration: none;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.admin-sidebar__logo-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.admin-sidebar__logo-img {
+  height: 28px;
+  width: auto;
+  object-fit: contain;
+  filter: drop-shadow(0 1px 3px oklch(0% 0 0 / 0.3));
+}
+.admin-sidebar__logo-text {
+  display: flex;
+  align-items: baseline;
+  gap: 3px;
+  font-family: var(--font-body);
+}
+.admin-sidebar__logo-clsu {
+  font-size: var(--text-base);
+  font-weight: 700;
+  color: var(--color-accent);
+}
+.admin-sidebar__logo-dot {
+  color: var(--color-primary-fg);
+  opacity: 0.5;
+  font-size: var(--text-xs);
+}
+.admin-sidebar__logo-crrdc {
+  font-size: var(--text-base);
+  font-weight: 600;
+  color: var(--color-primary-fg);
+}
+.admin-sidebar__sub {
+  display: block;
+  font-size: 0.7rem;
+  color: oklch(from var(--color-primary-fg) l c h / 0.65);
+  letter-spacing: 0.01em;
+}
+.admin-sidebar__nav-wrapper {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+.admin-sidebar__footer {
+  padding: var(--space-4) var(--space-6);
+  border-top: 1px solid oklch(from var(--color-primary-dark) calc(l - 0.08) c h);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  margin-top: auto;
+  background-color: var(--color-primary-dark);
+}
+.admin-sidebar__user-info {
+  display: flex;
+  flex-direction: column;
+}
+.admin-sidebar__user {
+  font-size: var(--text-xs);
+  font-weight: 600;
+  color: var(--color-primary-fg);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.admin-sidebar__role {
+  font-size: 0.65rem;
+  color: var(--color-accent);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+.admin-sidebar__signout {
+  width: 100%;
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid oklch(from var(--color-primary-fg) l c h / 0.2);
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: oklch(from var(--color-primary-fg) l c h / 0.8);
+  font-size: var(--text-xs);
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color var(--dur-fast) var(--ease-out);
+}
+.admin-sidebar__signout:hover {
+  background-color: oklch(from var(--color-primary-fg) l c h / 0.1);
+  color: var(--color-primary-fg);
+}
+.admin-main {
+  margin-left: 260px;
+  flex: 1;
+  min-height: 100vh;
+  min-height: 100dvh;
+  padding: var(--space-8);
+  min-width: 0;
+  width: calc(100% - 260px);
+}
+
+@media (max-width: 768px) {
+  .admin-shell {
+    flex-direction: column;
+  }
+  .admin-mobile-header {
+    display: flex;
+  }
+  .admin-sidebar-overlay {
+    display: block;
+    position: fixed;
+    inset: 0;
+    background-color: oklch(0% 0 0 / 0.5);
+    z-index: 95;
+  }
+  .admin-sidebar {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    width: 280px;
+    z-index: 1000;
+    transform: translateX(-100%);
+  }
+  .admin-sidebar[data-open="true"] {
+    transform: translateX(0);
+  }
+  .admin-main {
+    margin-left: 0;
+    width: 100%;
+    padding: var(--space-4);
+  }
+}
+
+@keyframes page-enter {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: none; }
+}
+.page-enter {
+  animation: page-enter var(--dur-slow) var(--ease-out) both;
+}
+
+/* Scoped shop/admin button & card hover animations */
+.public-layout .product-card,
+.public-layout .card,
+.admin-shell .metric-card,
+.admin-shell .table-card,
+.admin-shell .analytics-card,
+.admin-shell .stock-card,
+.admin-shell .chart-box {
+  transition: transform 220ms cubic-bezier(0.16, 1, 0.3, 1),
+              box-shadow 220ms cubic-bezier(0.16, 1, 0.3, 1),
+              border-color 220ms ease;
+}
+
+.public-layout .product-card:hover,
+.public-layout .card:hover,
+.admin-shell .metric-card:hover,
+.admin-shell .stock-card:hover,
+.admin-shell .chart-box:hover {
+  transform: translateY(-4px) scale(1.008);
+  box-shadow: 0 14px 35px oklch(0% 0 0 / 0.12);
+  border-color: var(--color-primary);
 }

@@ -61,10 +61,7 @@ export function Research() {
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
         <div className="mx-auto max-w-xl text-center mb-12">
-          <span className="text-xs font-semibold uppercase tracking-widest text-[#008736]">
-            Achievements
-          </span>
-          <h2 className="mt-1.5 text-2xl font-bold tracking-tight text-neutral-900 sm:text-3xl">
+          <h2 className="text-2xl font-bold tracking-tight text-neutral-900 sm:text-3xl">
             Research Impact &amp; Metrics
           </h2>
           <p className="mt-2 text-sm text-neutral-600">
@@ -82,13 +79,15 @@ export function Research() {
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.4, delay: idx * 0.06 }}
               viewport={{ once: true }}
-              className="flex flex-col items-center justify-center rounded-xl border border-neutral-200/80 bg-neutral-50/60 p-5 text-center transition hover:bg-white hover:shadow-xs"
+              className={`flex flex-col items-center justify-center rounded-xl border border-neutral-200/80 bg-neutral-50/60 p-5 text-center transition hover:bg-white hover:shadow-xs ${
+                idx === stats.length - 1 ? "col-span-2 sm:col-span-1" : ""
+              }`}
             >
               <span className="text-3xl font-bold tracking-tight text-neutral-900 sm:text-4xl">
                 <AnimatedNumber value={stat.value} />
                 {stat.suffix && <span className="text-[#008736]">{stat.suffix}</span>}
               </span>
-              <span className="mt-1.5 text-[11px] font-medium text-neutral-500 leading-tight">
+              <span className="mt-1.5 text-[11px] font-medium text-neutral-600 leading-tight">
                 {stat.label}
               </span>
             </motion.div>
@@ -97,7 +96,7 @@ export function Research() {
 
         {/* Institutional Collaborators */}
         <div className="mt-14 pt-10 border-t border-neutral-100">
-          <p className="text-center text-[11px] font-semibold uppercase tracking-widest text-neutral-400 mb-6">
+          <p className="text-center text-[11px] font-semibold uppercase tracking-widest text-neutral-500 mb-6">
             Institutional Research Partners
           </p>
           <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-2.5">

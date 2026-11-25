@@ -112,10 +112,7 @@ export function Facilities() {
       <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         {/* Concise Section Header */}
         <div className="mx-auto max-w-xl text-center mb-10">
-          <span className="text-xs font-semibold uppercase tracking-widest text-[#008736]">
-            Infrastructure
-          </span>
-          <h2 className="mt-1.5 text-2xl font-bold tracking-tight text-neutral-900 sm:text-3xl">
+          <h2 className="text-2xl font-bold tracking-tight text-neutral-900 sm:text-3xl">
             Specialized R&amp;D Facilities &amp; Infrastructure
           </h2>
           <p className="mt-2 text-sm text-neutral-600">

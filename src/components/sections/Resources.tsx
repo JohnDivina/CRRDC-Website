@@ -81,10 +81,7 @@ export function Resources() {
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
         <div className="mx-auto max-w-xl text-center mb-12">
-          <span className="text-xs font-semibold uppercase tracking-widest text-[#008736]">
-            Portals &amp; Tools
-          </span>
-          <h2 className="mt-1.5 text-2xl font-bold tracking-tight text-neutral-900 sm:text-3xl">
+          <h2 className="text-2xl font-bold tracking-tight text-neutral-900 sm:text-3xl">
             CRRDC Resources
           </h2>
           <p className="mt-2 text-sm text-neutral-600">
@@ -117,20 +114,23 @@ export function Resources() {
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
                     <span
-                      className={`absolute top-2.5 right-2.5 rounded-full px-2 py-0.5 text-[10px] font-semibold tracking-wide ${
-                        item.status === "Active"
-                          ? "bg-emerald-600 text-white"
-                          : item.status === "Beta"
-                          ? "bg-amber-600 text-white"
-                          : "bg-neutral-800/80 text-neutral-200 backdrop-blur-xs"
-                      }`}
+                      className="absolute top-2.5 right-2.5 inline-flex items-center gap-1.5 rounded-full border border-neutral-200/90 bg-neutral-900/85 px-2.5 py-0.5 text-[10px] font-semibold tracking-wide text-white backdrop-blur-xs"
                     >
+                      <span
+                        className={`h-1.5 w-1.5 rounded-full ${
+                          item.status === "Active"
+                            ? "bg-white"
+                            : item.status === "Beta"
+                            ? "bg-neutral-300"
+                            : "bg-neutral-500"
+                        }`}
+                      />
                       {item.status}
                     </span>
                   </div>
 
                   {/* Text Information */}
-                  <span className="text-[11px] font-medium text-neutral-400">
+                  <span className="text-[11px] font-medium text-neutral-500">
                     {item.category}
                   </span>
                   <h3 className="mt-0.5 text-base font-semibold text-neutral-900 group-hover:text-[#008736] transition-colors">
@@ -154,12 +154,12 @@ export function Resources() {
                       <IconExternalLink className="h-3.5 w-3.5" />
                     </a>
                   ) : (
-                    <span className="inline-flex items-center gap-1 text-xs font-medium text-neutral-400">
+                    <span className="inline-flex items-center gap-1 text-xs font-medium text-neutral-500">
                       <IconLock className="h-3.5 w-3.5" />
                       Institutional Access
                     </span>
                   )}
-                  <span className="text-[10px] text-neutral-400 font-mono">
+                  <span className="text-[10px] text-neutral-500 font-mono">
                     CRRDC
                   </span>
                 </div>

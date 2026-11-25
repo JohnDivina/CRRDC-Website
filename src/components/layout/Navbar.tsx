@@ -22,7 +22,6 @@ export function AppNavbar() {
     { name: "Facilities", link: "#facilities" },
     { name: "Research", link: "#research" },
     { name: "Resources", link: "#resources" },
-    { name: "Contact", link: "#contact" },
   ];
 
   return (
@@ -33,13 +32,8 @@ export function AppNavbar() {
           <NavbarLogo />
           <NavItems items={navItems} />
           <div className="flex items-center gap-2.5">
-            <NavbarButton
-              href="https://crrdc.vercel.app"
-              target="_blank"
-              rel="noopener noreferrer"
-              variant="secondary"
-            >
-              Resursee
+            <NavbarButton href="/shop" variant="secondary">
+              Shop Now
             </NavbarButton>
             <NavbarButton href="#contact" variant="primary">
               Contact
@@ -73,14 +67,12 @@ export function AppNavbar() {
             ))}
             <div className="mt-2 flex w-full flex-col gap-2 pt-2 border-t border-neutral-100">
               <NavbarButton
-                href="https://crrdc.vercel.app"
-                target="_blank"
-                rel="noopener noreferrer"
+                href="/shop"
                 onClick={() => setIsMobileMenuOpen(false)}
                 variant="secondary"
                 className="w-full py-2 text-xs"
               >
-                Resursee Platform
+                Shop Now
               </NavbarButton>
               <NavbarButton
                 href="#contact"

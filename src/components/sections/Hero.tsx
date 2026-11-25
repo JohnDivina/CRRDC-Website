@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import Link from "next/link";
 import { ParallaxHeroImages } from "@/components/ui/parallax-hero-images";
 
 // Curated 6 pictures for the hero parallax
@@ -17,18 +18,13 @@ export function Hero() {
   return (
     <section
       id="about"
-      className="relative flex min-h-[88dvh] w-full items-center justify-center overflow-hidden bg-[#fafafa] pt-24 pb-16"
+      className="relative flex min-h-[84dvh] sm:min-h-[88dvh] w-full items-center justify-center overflow-hidden bg-[#fbfcf9] pt-24 pb-16"
     >
       {/* Aceternity — Parallax Hero Images (6 images, edge-focus) */}
       <ParallaxHeroImages images={heroImages} variant="edge-focus" />
 
       {/* Central Content */}
       <div className="relative z-10 mx-auto flex max-w-3xl flex-col items-center px-4 text-center">
-        <span className="mb-4 inline-flex items-center gap-1.5 rounded-full border border-neutral-200/80 bg-white/90 px-3 py-1 text-[11px] font-medium tracking-wide text-neutral-600 shadow-xs backdrop-blur-xs">
-          <span className="h-1.5 w-1.5 rounded-full bg-[#008736]" />
-          Central Luzon State University
-        </span>
-
         <h1 className="text-3xl font-bold tracking-tight text-neutral-900 sm:text-5xl md:text-6xl">
           Crops and Resources Research
           <br />
@@ -47,12 +43,12 @@ export function Hero() {
           >
             Explore Divisions
           </a>
-          <a
-            href="#resources"
+          <Link
+            href="/shop"
             className="rounded-full border border-neutral-200 bg-white px-5 py-2.5 text-xs font-semibold text-neutral-700 shadow-xs transition hover:border-neutral-300 hover:text-neutral-900 active:scale-[0.98]"
           >
-            View Resources
-          </a>
+            Shop Now
+          </Link>
         </div>
       </div>
     </section>

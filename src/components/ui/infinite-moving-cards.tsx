@@ -1,9 +1,11 @@
 "use client";
 
 import { cn } from "@/lib/utils";
+import Image from "next/image";
 import React, { useEffect, useRef, useCallback } from "react";
 
 export interface DivisionSlide {
+  id?: string;
   title: string;
   description?: string;
   button: string;
@@ -15,12 +17,15 @@ export const InfiniteMovingCards = ({
   items,
   direction = "left",
   speed = "normal",
+  pauseOnHover = true,
+  onSelect,
   className,
 }: {
   items: DivisionSlide[];
   direction?: "left" | "right";
   speed?: "fast" | "normal" | "slow";
   pauseOnHover?: boolean;
+  onSelect?: (item: DivisionSlide) => void;
   className?: string;
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -32,6 +37,7 @@ export const InfiniteMovingCards = ({
 
   // Interaction tracking
   const isUserInteractingRef = useRef<boolean>(false);
+  const isHoveredRef = useRef<boolean>(false);
   const isDraggingRef = useRef<boolean>(false);
   const startXRef = useRef<number>(0);
   const startPosRef = useRef<number>(0);
@@ -97,13 +103,21 @@ export const InfiniteMovingCards = ({
     const pxPerSecond =
       speed === "fast" ? 48 : speed === "slow" ? 20 : 32;
     const sign = direction === "left" ? 1 : -1;
+    const reducedMotion =
+      typeof window !== "undefined" &&
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
     const animate = (time: number) => {
       const dt = Math.min((time - lastTime) / 1000, 0.05);
       lastTime = time;
 
-      // Only auto-scroll when user is NOT actively dragging or swiping
-      if (!isUserInteractingRef.current && !isDraggingRef.current) {
+      // Only auto-scroll when user is NOT actively dragging, swiping, or hovering
+      if (
+        !reducedMotion &&
+        !isUserInteractingRef.current &&
+        !isDraggingRef.current &&
+        !(pauseOnHover && isHoveredRef.current)
+      ) {
         xRef.current += sign * pxPerSecond * dt;
 
         const setW = setWidthRef.current;
@@ -135,7 +149,7 @@ export const InfiniteMovingCards = ({
         clearTimeout(resumeTimerRef.current);
       }
     };
-  }, [direction, speed, measureSetWidth]);
+  }, [direction, speed, pauseOnHover, measureSetWidth]);
 
   // Trackpad horizontal swipe & mouse wheel handling
   const handleWheel = useCallback(
@@ -268,22 +282,28 @@ export const InfiniteMovingCards = ({
       onPointerMove={handlePointerMove}
       onPointerUp={handlePointerUp}
       onPointerCancel={handlePointerUp}
+      onMouseEnter={() => {
+        if (pauseOnHover) isHoveredRef.current = true;
+      }}
+      onMouseLeave={() => {
+        isHoveredRef.current = false;
+      }}
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}
       className={cn(
-        "scroller relative z-20 w-full overflow-hidden [mask-image:linear-gradient(to_right,transparent,white_6%,white_94%,transparent)] [-webkit-mask-image:linear-gradient(to_right,transparent,white_6%,white_94%,transparent)] select-none py-4 cursor-grab active:cursor-grabbing",
+        "scroller relative z-20 w-full overflow-hidden [mask-image:linear-gradient(to_right,transparent,white_3%,white_97%,transparent)] sm:[mask-image:linear-gradient(to_right,transparent,white_6%,white_94%,transparent)] [-webkit-mask-image:linear-gradient(to_right,transparent,white_3%,white_97%,transparent)] sm:[-webkit-mask-image:linear-gradient(to_right,transparent,white_6%,white_94%,transparent)] select-none py-4 cursor-grab active:cursor-grabbing",
         className
       )}
     >
       {/* Soft gradient edge fade overlays pinned to outer boundaries */}
-      <div className="pointer-events-none absolute left-0 top-0 bottom-0 z-30 w-16 sm:w-28 bg-gradient-to-r from-white via-white/85 to-transparent" />
-      <div className="pointer-events-none absolute right-0 top-0 bottom-0 z-30 w-16 sm:w-28 bg-gradient-to-l from-white via-white/85 to-transparent" />
+      <div className="pointer-events-none absolute left-0 top-0 bottom-0 z-30 w-6 sm:w-20 md:w-28 bg-gradient-to-r from-white via-white/85 to-transparent" />
+      <div className="pointer-events-none absolute right-0 top-0 bottom-0 z-30 w-6 sm:w-20 md:w-28 bg-gradient-to-l from-white via-white/85 to-transparent" />
 
       {/* Hardware GPU-accelerated scroller list */}
       <ul
         ref={scrollerRef}
-        className="flex min-w-max shrink-0 gap-6 px-4 flex-nowrap relative will-change-transform"
+        className="flex min-w-max shrink-0 gap-4 sm:gap-6 px-4 flex-nowrap relative will-change-transform"
         style={{
           transform: "translate3d(0, 0, 0)",
           WebkitBackfaceVisibility: "hidden",
@@ -295,21 +315,24 @@ export const InfiniteMovingCards = ({
           return (
             <li
               key={`${item.title}-${idx}`}
-              className="group relative flex h-[275px] w-[300px] sm:h-[290px] sm:w-[350px] md:w-[380px] flex-shrink-0 flex-col justify-end overflow-hidden rounded-2xl border border-neutral-200/80 bg-neutral-900 p-6 shadow-md transition-all duration-300 hover:shadow-xl hover:border-neutral-300 cursor-pointer"
+              className="group relative flex h-[275px] w-[270px] sm:h-[290px] sm:w-[340px] md:w-[380px] flex-shrink-0 flex-col justify-end overflow-hidden rounded-2xl border border-neutral-200/80 bg-neutral-900 p-5 sm:p-6 shadow-md transition-all duration-300 hover:shadow-xl hover:border-neutral-300 cursor-pointer"
               onClick={(e) => {
                 if (hasDraggedRef.current) {
                   e.preventDefault();
                   e.stopPropagation();
+                  return;
                 }
+                onSelect?.(item);
               }}
             >
               {/* Background Image with subtle zoom on hover */}
               <div className="absolute inset-0 overflow-hidden pointer-events-none">
-                <img
+                <Image
                   src={item.src}
                   alt={item.title}
-                  className="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-105 opacity-80"
-                  loading="eager"
+                  fill
+                  sizes="(max-width: 640px) 270px, (max-width: 768px) 340px, 380px"
+                  className="object-cover transition-transform duration-700 ease-out group-hover:scale-105 opacity-80"
                   draggable={false}
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent" />
@@ -317,22 +340,31 @@ export const InfiniteMovingCards = ({
 
               {/* Division Content */}
               <div className="relative z-10 pointer-events-none">
-                <span className="inline-block rounded-full bg-black/40 px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-widest text-[#47c76a] backdrop-blur-xs border border-white/10">
+                <span className="inline-block rounded-full bg-black/50 px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-widest text-neutral-100 backdrop-blur-xs border border-white/15">
                   Division 0{divisionNumber}
                 </span>
                 <h3 className="mt-2 text-base font-bold leading-snug text-white sm:text-lg md:text-xl">
                   {item.title}
                 </h3>
                 {item.description && (
-                  <p className="mt-1.5 line-clamp-2 text-xs leading-relaxed text-neutral-300">
+                  <p className="mt-1.5 line-clamp-2 text-xs leading-relaxed text-neutral-200">
                     {item.description}
                   </p>
                 )}
                 <div className="mt-4 flex items-center justify-between">
-                  <span className="pointer-events-auto inline-flex items-center gap-1.5 rounded-full bg-white/95 px-3.5 py-1 text-xs font-semibold text-neutral-900 shadow-sm transition hover:bg-white active:scale-95">
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      if (!hasDraggedRef.current) {
+                        onSelect?.(item);
+                      }
+                    }}
+                    className="pointer-events-auto inline-flex items-center gap-1.5 rounded-full bg-white/95 px-3.5 py-1 text-xs font-semibold text-neutral-900 shadow-sm transition hover:bg-white active:scale-95"
+                  >
                     {item.button}
-                  </span>
-                  <span className="text-[10px] text-neutral-400 font-mono">
+                  </button>
+                  <span className="text-[10px] text-neutral-300 font-mono">
                     CRRDC · CLSU
                   </span>
                 </div>

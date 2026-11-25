@@ -8,7 +8,8 @@ import {
   useScroll,
   useMotionValueEvent,
 } from "motion/react";
-import React, { createContext, useContext, useEffect, useRef, useState } from "react";
+import React, { createContext, useContext, useEffect, useState } from "react";
+import Image from "next/image";
 
 interface NavbarContextType {
   visible: boolean;
@@ -118,7 +119,7 @@ export const NavBody = ({
       className={cn(
         "relative z-[60] mx-auto hidden flex-row items-center justify-between backdrop-blur-md lg:flex",
         visible
-          ? "w-[860px] max-w-[92vw] translate-y-3 rounded-full border border-neutral-200/80 bg-white/90 px-6 py-2.5 shadow-lg shadow-black/[0.04]"
+          ? "w-[900px] max-w-[94vw] translate-y-3 rounded-full border border-neutral-200/80 bg-white/90 px-6 py-2.5 shadow-lg shadow-black/[0.04]"
           : "w-full max-w-full translate-y-0 rounded-none border-b border-neutral-200/80 bg-white/95 px-8 py-3.5 shadow-none",
         className,
       )}
@@ -208,22 +209,43 @@ export const MobileNavMenu = ({
   children,
   className,
   isOpen,
+  onClose,
 }: MobileNavMenuProps) => {
+  useEffect(() => {
+    if (!isOpen) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose();
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [isOpen, onClose]);
+
   return (
     <AnimatePresence>
       {isOpen && (
-        <motion.div
-          initial={{ opacity: 0, y: -8, scale: 0.98 }}
-          animate={{ opacity: 1, y: 0, scale: 1 }}
-          exit={{ opacity: 0, y: -8, scale: 0.98 }}
-          transition={{ duration: 0.18, ease: "easeOut" }}
-          className={cn(
-            "absolute inset-x-0 top-full mt-2 z-50 flex w-full flex-col items-start justify-start gap-3 rounded-2xl border border-neutral-200/80 bg-white/95 p-6 shadow-xl backdrop-blur-md",
-            className,
-          )}
-        >
-          {children}
-        </motion.div>
+        <>
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.15 }}
+            onClick={onClose}
+            aria-hidden="true"
+            className="fixed inset-0 top-0 z-40 bg-black/15 backdrop-blur-[1px] lg:hidden"
+          />
+          <motion.div
+            initial={{ opacity: 0, y: -8, scale: 0.98 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -8, scale: 0.98 }}
+            transition={{ duration: 0.18, ease: "easeOut" }}
+            className={cn(
+              "absolute inset-x-0 top-full mt-2 z-50 flex w-full flex-col items-start justify-start gap-3 rounded-2xl border border-neutral-200/80 bg-white/95 p-6 shadow-xl backdrop-blur-md",
+              className,
+            )}
+          >
+            {children}
+          </motion.div>
+        </>
       )}
     </AnimatePresence>
   );
@@ -240,6 +262,7 @@ export const MobileNavToggle = ({
     <button
       onClick={onClick}
       aria-label="Toggle Menu"
+      aria-expanded={isOpen}
       className="p-1.5 rounded-lg text-neutral-800 hover:bg-neutral-100 transition-colors"
     >
       {isOpen ? (
@@ -271,14 +294,20 @@ export const NavbarLogo = ({
       {children || (
         <>
           <div className="flex items-center gap-1.5">
-            <img
+            <Image
               src="/logos/clsu-logo.png"
               alt="CLSU Seal"
+              width={28}
+              height={28}
+              priority
               className="h-7 w-7 object-contain"
             />
-            <img
+            <Image
               src="/logos/crrdc-logo.png"
               alt="CRRDC Logo"
+              width={28}
+              height={28}
+              priority
               className="h-7 w-7 object-contain"
             />
           </div>

@@ -1,0 +1,347 @@
+"use client";
+
+// app/(public)/checkout/order/[orderId]/OrderReceiptClient.tsx — Customer Live Order Status Tracker & Receipt
+import { useEffect, useState, useCallback, Component } from "react";
+import Link from "next/link";
+import { formatPHP, breakdownRiceQty, type Order, type OrderItem } from "@/types";
+import { CheckCircle2, Clock, ArrowLeft, RefreshCw, Download, Building2, PackageCheck, Receipt, AlertCircle } from "lucide-react";
+
+interface OrderReceiptClientProps {
+  order: Order;
+  items: OrderItem[];
+}
+
+// Global React Error Boundary to prevent "This page could not be loaded" crash screen
+class ReceiptErrorBoundary extends Component<{ children: React.ReactNode }, { hasError: boolean }> {
+  constructor(props: { children: React.ReactNode }) {
+    super(props);
+    this.state = { hasError: false };
+  }
+
+  static getDerivedStateFromError() {
+    return { hasError: true };
+  }
+
+  componentDidCatch(error: any, errorInfo: any) {
+    console.error("Receipt Page Error Boundary caught error:", error, errorInfo);
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div style={{ padding: "40px 20px", textAlign: "center", maxWidth: "600px", margin: "40px auto", backgroundColor: "#fff", borderRadius: "16px", border: "1px solid #e5e7eb" }}>
+          <AlertCircle size={40} color="#dc2626" style={{ margin: "0 auto 16px" }} />
+          <h2 style={{ fontSize: "1.25rem", fontWeight: "700", color: "#111827", marginBottom: "8px" }}>Order Tracker Temporarily Unavailable</h2>
+          <p style={{ fontSize: "0.875rem", color: "#4b5563", marginBottom: "24px" }}>
+            Your order has been recorded successfully. Please proceed to the CRRDC Cashier to complete your payment.
+          </p>
+          <button
+            type="button"
+            onClick={() => window.location.reload()}
+            style={{ padding: "10px 20px", backgroundColor: "#1e6031", color: "#fff", border: "none", borderRadius: "8px", fontWeight: "600", cursor: "pointer" }}
+          >
+            Reload Order Page
+          </button>
+        </div>
+      );
+    }
+    return this.props.children;
+  }
+}
+
+function OrderReceiptClientInternal({ order: initialOrder, items: initialItems }: OrderReceiptClientProps) {
+  const [order, setOrder] = useState<Order>(initialOrder);
+  const [itemList, setItemList] = useState<OrderItem[]>(initialItems || []);
+  const [refreshing, setRefreshing] = useState(false);
+
+  const handleRefreshStatus = useCallback(async () => {
+    if (!order?.id) return;
+    setRefreshing(true);
+    try {
+      const res = await fetch(`/api/orders/${order.id}`);
+      if (res.ok) {
+        const data = await res.json();
+        if (data.ok && data.data && data.data.id) {
+          const { items: fetchedItems, ...fetchedOrder } = data.data;
+          setOrder((prev) => ({ ...prev, ...fetchedOrder }));
+          if (Array.isArray(fetchedItems) && fetchedItems.length > 0) {
+            setItemList(fetchedItems);
+          }
+        }
+      }
+    } catch {
+      // Ignore network glitches during polling
+    } finally {
+      setRefreshing(false);
+    }
+  }, [order?.id]);
+
+  // Poll status every 5 seconds for live progress tracking
+  useEffect(() => {
+    if (!order?.id) return;
+    const interval = setInterval(() => {
+      handleRefreshStatus();
+    }, 5000);
+    return () => clearInterval(interval);
+  }, [order?.id, handleRefreshStatus]);
+
+  const handleDownloadPDF = async () => {
+    try {
+      const { generatePDFReceipt } = await import("@/lib/pdf-receipt");
+      generatePDFReceipt(order, itemList);
+    } catch (err) {
+      console.error("PDF generation failed:", err);
+    }
+  };
+
+  const isPaymentConfirmed = order?.status === "payment_confirmed" || order?.status === "completed";
+  const isCompleted = order?.status === "completed";
+  const currentOrderType = String(order?.order_type || "regular").toLowerCase();
+
+
+  return (
+    <div className="tracker-page">
+      <div className="tracker-container">
+        <Link href="/catalog" className="back-link">
+          <ArrowLeft size={16} aria-hidden="true" />
+          <span>Return to Catalog</span>
+        </Link>
+
+        {/* CASHIER & LABORATORY INSTRUCTIONS */}
+        <div className="flow-notice">
+          <div className="notice-header">
+            <Receipt size={18} className="notice-icon" aria-hidden="true" />
+            <h3 className="notice-title">Order Slip for CLSU Cashier &amp; CRRDC Laboratory</h3>
+          </div>
+          <p className="notice-body">
+            <strong>Stop 1:</strong> Show this Order Slip at the <strong>CLSU Cashier&apos;s Office</strong> to pay and receive your Official Receipt (OR).{" "}
+            <strong>Stop 2:</strong> Present your <strong>Official Receipt (OR)</strong> at the <strong>CRRDC Laboratory</strong> to claim your items.
+          </p>
+        </div>
+
+        {/* LIVE 3-STAGE STATUS PROGRESS TRACKER */}
+        <div className="status-tracker-card">
+          <h2 className="tracker-card-title">Order &amp; Claim Progress</h2>
+
+          <div className="progress-steps">
+            {/* Step 1: Order Slip Ready */}
+            <div className="step-node step--done">
+              <div className="step-badge">
+                <CheckCircle2 size={18} />
+              </div>
+              <div className="step-content">
+                <h4 className="step-title">Step 1: Order Slip Generated</h4>
+                <p className="step-desc">
+                  Your order details and stock availability have been recorded. Download or screenshot this slip for the Cashier.
+                </p>
+              </div>
+            </div>
+
+            <div className="step-connector connector--active" />
+
+            {/* Step 2: CLSU Cashier Payment */}
+            <div className={`step-node ${isPaymentConfirmed ? "step--done" : "step--active"}`}>
+              <div className="step-badge">
+                {isPaymentConfirmed ? <CheckCircle2 size={18} /> : <Receipt size={18} />}
+              </div>
+              <div className="step-content">
+                <h4 className="step-title">Step 2: Pay at CLSU Cashier&apos;s Office</h4>
+                <p className="step-desc">
+                  {isPaymentConfirmed
+                    ? `Official Receipt logged${order?.billing_number ? ` (Ref: ${order.billing_number})` : ""}.`
+                    : "Present this Order Slip at the CLSU Cashier's Office to pay in cash and obtain your Official Receipt (OR)."}
+                </p>
+              </div>
+            </div>
+
+            <div className={`step-connector ${isCompleted ? "connector--active" : ""}`} />
+
+            {/* Step 3: CRRDC Laboratory Release */}
+            <div className={`step-node ${isCompleted ? "step--done" : isPaymentConfirmed ? "step--active" : "step--pending"}`}>
+              <div className="step-badge">
+                {isCompleted ? <CheckCircle2 size={18} /> : <PackageCheck size={18} />}
+              </div>
+              <div className="step-content">
+                <h4 className="step-title">Step 3: Show OR &amp; Claim at CRRDC Laboratory</h4>
+                <p className="step-desc">
+                  {isCompleted
+                    ? "Items released by CRRDC Laboratory staff. Thank you for your order."
+                    : "Show your Cashier Official Receipt (OR) and Order ID at the CRRDC Laboratory to pick up your items."}
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* ORDER SLIP & BILLING SUMMARY */}
+        <div className="receipt-card">
+          <div className="receipt-header">
+            <div>
+              <span className="order-id-label">ORDER SLIP ID</span>
+              <h1 className="order-id-val">{order?.id || "N/A"}</h1>
+              {order?.billing_number && (
+                <span className="billing-badge">Official Receipt / Ref No: <strong>{order.billing_number}</strong></span>
+              )}
+            </div>
+
+            <button
+              type="button"
+              className="download-pdf-btn"
+              onClick={handleDownloadPDF}
+            >
+              <Download size={16} aria-hidden="true" />
+              <span>{isCompleted ? "Download Receipt PDF" : "Download Order Slip PDF"}</span>
+            </button>
+          </div>
+
+
+          <div className="meta-grid">
+            <div className="meta-box">
+              <span className="meta-label">Customer Name</span>
+              <strong className="meta-val">{order?.customer_name || "Guest Customer"}</strong>
+            </div>
+            <div className="meta-box">
+              <span className="meta-label">Order Type</span>
+              <strong className="meta-val">{currentOrderType.toUpperCase()}</strong>
+            </div>
+            {order?.purpose && (
+              <div className="meta-box" style={{ gridColumn: "1 / -1" }}>
+                <span className="meta-label">Purpose of Order</span>
+                <strong className="meta-val">{order.purpose}</strong>
+              </div>
+            )}
+            {order?.customer_org && (
+              <div className="meta-box">
+                <span className="meta-label">Organization / Center:</span>
+                <strong className="meta-val">{order.customer_org}</strong>
+              </div>
+            )}
+            {order?.preferred_pickup_date && (
+              <div className="meta-box">
+                <span className="meta-label">Preferred Pickup Date:</span>
+                <strong className="meta-val">{order.preferred_pickup_date}</strong>
+              </div>
+            )}
+          </div>
+
+          <div className="items-section">
+            <h3 className="section-heading">Order Line Items</h3>
+            <div className="items-table">
+              {(itemList || []).map((item) => {
+                const isRice = item?.unit_type === "kg";
+                const breakdown = isRice ? breakdownRiceQty(item?.quantity) : null;
+                return (
+                  <div key={item?.id || Math.random()} className="item-row">
+                    <div>
+                      <strong className="item-name">{item?.product?.name || "Agricultural Item"}</strong>
+                      <span className="item-qty">
+                        {item?.quantity || 1} {item?.unit_type === "kg" ? "kg" : "unit(s)"} @ {formatPHP(item?.unit_price_php)}
+                        {isRice && breakdown && breakdown.sacks > 0
+                          ? ` (${breakdown.sacks} sack${breakdown.sacks > 1 ? "s" : ""} ${breakdown.looseKg > 0 ? `+ ${breakdown.looseKg} kg` : ""})`
+                          : ""}
+                      </span>
+                    </div>
+                    <span className="item-price">{formatPHP(item?.line_total_php)}</span>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
+          <div className="summary-section">
+            <div className="summary-row">
+              <span>Total Recorded Value:</span>
+              <strong className="summary-price">{formatPHP(Number(order?.total_price_php || 0))}</strong>
+            </div>
+            <div className="summary-row">
+              <span>Amount Paid:</span>
+              <strong className="summary-price">
+                {currentOrderType === "complimentary" ? "₱0.00 (Complimentary)" : formatPHP(Number(order?.amount_paid_php ?? order?.total_price_php ?? 0))}
+              </strong>
+            </div>
+          </div>
+
+
+          <div className="card-footer">
+            <button type="button" onClick={handleRefreshStatus} disabled={refreshing} className="refresh-btn">
+              <RefreshCw size={14} className={refreshing ? "spin" : ""} aria-hidden="true" />
+              <span>Refresh Status Now</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <style>{`
+        .tracker-page { padding-block: var(--space-8); }
+        .tracker-container { max-width: 680px; margin-inline: auto; padding-inline: var(--gutter); display: flex; flex-direction: column; gap: var(--space-6); }
+
+        .back-link { display: inline-flex; align-items: center; gap: var(--space-2); font-size: var(--text-xs); font-weight: 600; color: var(--color-primary); text-decoration: none; }
+
+        /* CASHIER & LAB FLOW NOTICE */
+        .flow-notice { background-color: #f4f6f1; border: 1px solid #e2e7dc; border-left: 3px solid #008736; border-radius: var(--radius-lg); padding: var(--space-4) var(--space-5); display: flex; flex-direction: column; gap: 6px; }
+        .notice-header { display: flex; align-items: center; gap: var(--space-2); }
+        .notice-icon { color: #008736; flex-shrink: 0; }
+        .notice-title { font-family: var(--font-display); font-size: var(--text-base); color: #18231c; margin: 0; font-weight: 700; }
+        .notice-body { font-size: var(--text-xs); color: #526356; margin: 0; line-height: 1.55; }
+        .notice-body strong { color: #18231c; }
+
+        /* STATUS TRACKER */
+        .status-tracker-card { background-color: #ffffff; border: 1px solid var(--color-border); border-radius: var(--radius-xl); padding: var(--space-6); }
+        .tracker-card-title { font-family: var(--font-display); font-size: var(--text-lg); color: var(--color-heading); margin: 0 0 var(--space-6); }
+
+        .progress-steps { display: flex; flex-direction: column; gap: 0; position: relative; }
+        .step-node { display: flex; align-items: flex-start; gap: var(--space-4); }
+        .step-badge { width: 36px; height: 36px; border-radius: var(--radius-full); display: flex; align-items: center; justify-content: center; flex-shrink: 0; background-color: #f4f6f1; color: #526356; border: 1px solid #e2e7dc; }
+        .step--done .step-badge { background-color: #008736; color: #ffffff; border-color: #008736; }
+        .step--active .step-badge { background-color: #18231c; color: #ffffff; border-color: #18231c; }
+
+        .step-content { display: flex; flex-direction: column; gap: 2px; }
+        .step-title { font-size: var(--text-sm); font-weight: 700; color: var(--color-heading); margin: 0; }
+        .step-desc { font-size: var(--text-xs); color: var(--color-ink-2); margin: 0; }
+
+        .step-connector { width: 2px; height: 28px; background-color: var(--color-border); margin-left: 17px; margin-block: 4px; }
+        .connector--active { background-color: var(--color-primary); }
+
+        /* RECEIPT CARD */
+        .receipt-card { background-color: var(--color-paper); border: 1px solid var(--color-border); border-radius: var(--radius-xl); padding: var(--space-6); display: flex; flex-direction: column; gap: var(--space-6); }
+        .receipt-header { display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 1px solid var(--color-border); padding-bottom: var(--space-4); }
+        .order-id-label { font-size: 0.65rem; color: var(--color-ink-3); font-weight: 700; letter-spacing: 0.05em; }
+        .order-id-val { font-family: var(--font-mono); font-size: var(--text-lg); color: var(--color-heading); margin: 0 0 var(--space-1); }
+        .billing-badge { font-size: var(--text-xs); color: var(--color-primary); font-weight: 600; display: block; }
+
+        .download-pdf-btn { display: inline-flex; align-items: center; gap: var(--space-2); padding: var(--space-3) var(--space-5); background-color: var(--color-primary); color: var(--color-primary-fg); border: none; border-radius: var(--radius-md); font-weight: 600; font-size: var(--text-xs); cursor: pointer; }
+
+        .meta-grid { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-3); background-color: var(--color-paper-2); padding: var(--space-4); border-radius: var(--radius-lg); }
+        .meta-box { display: flex; flex-direction: column; gap: 2px; }
+        .meta-label { font-size: 0.7rem; color: var(--color-ink-3); text-transform: uppercase; }
+        .meta-val { font-size: var(--text-xs); color: var(--color-heading); }
+
+        .items-section { display: flex; flex-direction: column; gap: var(--space-3); }
+        .section-heading { font-family: var(--font-display); font-size: var(--text-sm); color: var(--color-heading); margin: 0; }
+        .items-table { display: flex; flex-direction: column; gap: var(--space-2); }
+        .item-row { display: flex; justify-content: space-between; align-items: center; padding-bottom: var(--space-2); border-bottom: 1px dashed var(--color-border); }
+        .item-name { font-size: var(--text-xs); color: var(--color-heading); display: block; }
+        .item-qty { font-size: 0.7rem; color: var(--color-ink-3); }
+        .item-price { font-family: var(--font-mono); font-size: var(--text-xs); font-weight: 700; color: var(--color-heading); }
+
+        .summary-section { background-color: var(--color-paper-2); padding: var(--space-4); border-radius: var(--radius-lg); display: flex; flex-direction: column; gap: var(--space-2); }
+        .summary-row { display: flex; justify-content: space-between; font-size: var(--text-xs); color: var(--color-ink-2); }
+        .summary-price { font-family: var(--font-mono); font-size: var(--text-sm); color: var(--color-primary); }
+
+        .card-footer { display: flex; justify-content: flex-end; }
+        .refresh-btn { display: inline-flex; align-items: center; gap: var(--space-2); padding: var(--space-2) var(--space-4); border: 1px solid var(--color-border); background: var(--color-paper); border-radius: var(--radius-md); font-size: var(--text-xs); font-weight: 600; cursor: pointer; color: var(--color-ink-2); }
+        .spin { animation: spin 1s linear infinite; }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+      `}</style>
+    </div>
+  );
+}
+
+export default function OrderReceiptClient(props: OrderReceiptClientProps) {
+  return (
+    <ReceiptErrorBoundary>
+      <OrderReceiptClientInternal {...props} />
+    </ReceiptErrorBoundary>
+  );
+}
+
