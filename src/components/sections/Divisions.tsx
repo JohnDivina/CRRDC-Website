@@ -1,43 +1,123 @@
 "use client";
 
-import React, { useEffect, useRef, useState } from "react";
-import Image from "next/image";
-import { IconX } from "@tabler/icons-react";
-import { InfiniteMovingCards, DivisionSlide } from "@/components/ui/infinite-moving-cards";
-import { divisionsData, Division } from "@/data/divisions";
+import React, { useState } from "react";
+import { motion } from "motion/react";
+import { RotateCw } from "lucide-react";
+import { CometCard } from "@/components/ui/comet-card";
+import { divisionsData, type Division } from "@/data/divisions";
 
-const divisions: DivisionSlide[] = divisionsData.map((d) => ({
-  id: d.id,
-  title: d.name,
-  description: d.description,
-  button: d.button,
-  src: d.src,
-}));
+function DivisionFlipCard({
+  division,
+  isFlipped,
+  onToggle,
+}: {
+  division: Division;
+  isFlipped: boolean;
+  onToggle: () => void;
+}) {
+  return (
+    <CometCard rotateDepth={10} translateDepth={12} className="w-full max-w-[270px] mx-auto">
+      <button
+        type="button"
+        onClick={onToggle}
+        aria-pressed={isFlipped}
+        aria-label={
+          isFlipped
+            ? `Flip back ${division.name}`
+            : `View details for ${division.name}`
+        }
+        className="block w-full cursor-pointer border-0 bg-transparent p-0 text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-[#008736] focus-visible:ring-offset-2 rounded-[16px]"
+        style={{ perspective: "1200px" }}
+      >
+        <motion.div
+          animate={{ rotateY: isFlipped ? 180 : 0 }}
+          transition={{ duration: 0.55, ease: [0.16, 1, 0.3, 1] }}
+          className="relative w-full aspect-[3/4.2]"
+          style={{ transformStyle: "preserve-3d" }}
+        >
+          {/* FRONT FACE */}
+          <div
+            className="absolute inset-0 flex flex-col items-center justify-center rounded-[16px] bg-[#0b1c11] p-8 text-center text-white"
+            style={{ backfaceVisibility: "hidden", WebkitBackfaceVisibility: "hidden" }}
+          >
+            <h3 className="text-lg font-bold leading-snug tracking-tight text-white text-balance sm:text-xl">
+              {division.name}
+            </h3>
+          </div>
+
+          {/* BACK FACE */}
+          <div
+            className="absolute inset-0 flex flex-col justify-between rounded-[16px] border border-[#e2e7dc] bg-[#fbfcf9] p-6 text-[#18231c] overflow-y-auto"
+            style={{
+              backfaceVisibility: "hidden",
+              WebkitBackfaceVisibility: "hidden",
+              transform: "rotateY(180deg)",
+            }}
+          >
+            <div>
+              <div className="flex items-center justify-between gap-2">
+                <span className="inline-flex items-center rounded-full border border-[#e2e7dc] bg-[#f4f6f1] px-2.5 py-0.5 font-mono text-[10px] font-semibold uppercase tracking-wider text-[#18231c]">
+                  {division.code}
+                </span>
+                <span className="inline-flex items-center gap-1 text-[10px] font-medium text-[#526356]">
+                  <RotateCw className="h-2.5 w-2.5" aria-hidden="true" />
+                  <span>Flip back</span>
+                </span>
+              </div>
+
+              <h3 className="mt-3 text-sm font-bold leading-snug tracking-tight text-[#18231c]">
+                {division.name}
+              </h3>
+              <p className="mt-1.5 text-[11px] font-semibold leading-snug text-[#008736]">
+                {division.subtitle}
+              </p>
+
+              <p className="mt-3 text-xs leading-relaxed text-[#526356]">
+                {division.description}
+              </p>
+
+              <div className="mt-4 border-t border-[#e2e7dc] pt-3">
+                <h4 className="text-[10px] font-bold uppercase tracking-wider text-[#18231c]">
+                  Key Focus
+                </h4>
+                <ul className="mt-2 space-y-1.5 text-[11.5px] leading-snug text-[#526356]">
+                  {division.keyResponsibilities.slice(0, 3).map((item) => (
+                    <li key={item} className="flex items-start gap-2">
+                      <span className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-[#18231c]" />
+                      <span>{item}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+          </div>
+        </motion.div>
+      </button>
+    </CometCard>
+  );
+}
 
 export function Divisions() {
-  const [selectedDivision, setSelectedDivision] = useState<Division | null>(null);
-  const dialogRef = useRef<HTMLDialogElement>(null);
+  const [flippedIds, setFlippedIds] = useState<Record<string, boolean>>({});
 
-  useEffect(() => {
-    const dialog = dialogRef.current;
-    if (!dialog) return;
-    if (selectedDivision && !dialog.open) {
-      dialog.showModal();
-    } else if (!selectedDivision && dialog.open) {
-      dialog.close();
-    }
-  }, [selectedDivision]);
-
-  const handleSelect = (slide: DivisionSlide) => {
-    const found = divisionsData.find((d) => d.id === slide.id || d.name === slide.title);
-    if (found) setSelectedDivision(found);
+  const toggleCard = (id: string) => {
+    setFlippedIds((prev) => ({ ...prev, [id]: !prev[id] }));
   };
 
   return (
-    <section id="divisions" className="py-20 bg-white overflow-hidden">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+    <section
+      id="divisions"
+      className="relative py-28 sm:py-32 overflow-x-clip border-y border-[#e2e7dc]"
+      style={{
+        backgroundColor: "#f7f8f5",
+        backgroundImage: `linear-gradient(180deg, rgba(251, 252, 249, 0.35) 0%, rgba(251, 252, 249, 0.18) 50%, rgba(251, 252, 249, 0.35) 100%), url("/textures/divisions-plaster-seamless.jpg")`,
+        backgroundRepeat: "no-repeat, repeat",
+        backgroundSize: "100% 100%, 420px auto",
+      }}
+    >
+      <div className="relative z-10 mx-auto max-w-[1440px] px-6 sm:px-10 lg:px-16">
         {/* Concise Section Header */}
-        <div className="mx-auto max-w-xl text-center mb-10">
+        <div className="mx-auto max-w-xl text-center mb-20">
           <h2 className="text-2xl font-bold tracking-tight text-neutral-900 sm:text-3xl">
             Four Core Operating Divisions
           </h2>
@@ -46,100 +126,19 @@ export function Divisions() {
             advancing crop science, genomics, farm engineering, and communication.
           </p>
         </div>
+
+        {/* 4 Flippable CometCards in a Straight Row */}
+        <div className="grid grid-cols-1 gap-12 sm:grid-cols-2 lg:grid-cols-4 lg:gap-12 xl:gap-16">
+          {divisionsData.map((division) => (
+            <DivisionFlipCard
+              key={division.id}
+              division={division}
+              isFlipped={Boolean(flippedIds[division.id])}
+              onToggle={() => toggleCard(division.id)}
+            />
+          ))}
+        </div>
       </div>
-
-      {/* Infinite Moving Cards with Wide Span and Faded Edges */}
-      <div className="relative mx-auto w-full max-w-[1400px] overflow-hidden px-4 sm:px-6 lg:px-8">
-        <InfiniteMovingCards
-          items={divisions}
-          direction="left"
-          speed="normal"
-          pauseOnHover={true}
-          onSelect={handleSelect}
-        />
-      </div>
-
-      {/* Native Division Details Dialog */}
-      <dialog
-        ref={dialogRef}
-        onClose={() => setSelectedDivision(null)}
-        onClick={(e) => {
-          if (e.target === dialogRef.current) setSelectedDivision(null);
-        }}
-        className="m-auto w-[92vw] max-w-2xl rounded-2xl border border-neutral-200 bg-white p-0 text-left shadow-2xl backdrop:bg-black/50 backdrop:backdrop-blur-xs"
-      >
-        {selectedDivision && (
-          <div className="overflow-hidden">
-            <div className="relative h-44 w-full sm:h-52">
-              <Image
-                src={selectedDivision.src}
-                alt={selectedDivision.name}
-                fill
-                sizes="(max-width: 640px) 92vw, 672px"
-                className="object-cover"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
-              <button
-                type="button"
-                onClick={() => setSelectedDivision(null)}
-                aria-label="Close division details"
-                className="absolute top-3 right-3 rounded-full bg-black/60 p-1.5 text-white transition hover:bg-black/80"
-              >
-                <IconX className="h-4 w-4" />
-              </button>
-              <div className="absolute bottom-4 left-5 right-5">
-                <span className="inline-block rounded-full bg-white/90 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-widest text-neutral-900">
-                  {selectedDivision.code}
-                </span>
-                <h3 className="mt-1.5 text-lg font-bold text-white sm:text-xl">
-                  {selectedDivision.name}
-                </h3>
-              </div>
-            </div>
-
-            <div className="space-y-5 p-5 sm:p-6">
-              <div>
-                <p className="text-xs font-semibold uppercase tracking-wider text-[#008736]">
-                  {selectedDivision.subtitle}
-                </p>
-                <p className="mt-2 text-sm leading-relaxed text-neutral-600">
-                  {selectedDivision.description}
-                </p>
-              </div>
-
-              <div className="grid gap-4 sm:grid-cols-2">
-                <div className="rounded-xl border border-neutral-200/80 bg-neutral-50/70 p-4">
-                  <h4 className="text-xs font-bold uppercase tracking-wider text-neutral-900">
-                    Key Responsibilities
-                  </h4>
-                  <ul className="mt-2.5 space-y-1.5 text-xs leading-relaxed text-neutral-600">
-                    {selectedDivision.keyResponsibilities.map((item) => (
-                      <li key={item} className="flex items-start gap-2">
-                        <span className="mt-1.5 h-1.5 w-1.5 flex-shrink-0 rounded-full bg-[#008736]" />
-                        <span>{item}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-
-                <div className="rounded-xl border border-neutral-200/80 bg-neutral-50/70 p-4">
-                  <h4 className="text-xs font-bold uppercase tracking-wider text-neutral-900">
-                    Priority Programs
-                  </h4>
-                  <ul className="mt-2.5 space-y-1.5 text-xs leading-relaxed text-neutral-600">
-                    {selectedDivision.priorityPrograms.map((item) => (
-                      <li key={item} className="flex items-start gap-2">
-                        <span className="mt-1.5 h-1.5 w-1.5 flex-shrink-0 rounded-full bg-neutral-800" />
-                        <span>{item}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
-      </dialog>
     </section>
   );
 }

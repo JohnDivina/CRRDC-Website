@@ -85,10 +85,10 @@ export default function ProductCard({ product }: ProductCardProps) {
               {product.unit_type === "kg"
                 ? t("perKg")
                 : product.unit_type === "sack"
-                ? t("perSack")
-                : product.unit_type === "packet"
-                ? t("perPacket")
-                : t("perUnit")}
+                  ? t("perSack")
+                  : product.unit_type === "packet"
+                    ? t("perPacket")
+                    : t("perUnit")}
             </span>
           </div>
 
