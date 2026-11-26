@@ -148,6 +148,13 @@
   }
 }
 
+/* Hide hero floating images on mobile (< 640px) while keeping them in markup */
+@media (max-width: 639px) {
+  .hero-floating-images {
+    display: none;
+  }
+}
+
 .animate-scroll {
   animation: scroll var(--animation-duration, 35s) var(--animation-direction, forwards) linear infinite;
 }

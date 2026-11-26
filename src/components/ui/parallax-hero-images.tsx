@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useMemo, memo } from "react";
+import React, { useEffect, useMemo, useState, memo } from "react";
 import Image from "next/image";
 import {
   motion,
@@ -87,9 +87,20 @@ export const ParallaxHeroImages = ({
   }, [images, variant]);
 
   const prefersReducedMotion = useReducedMotion();
+  const [isDesktopOrTablet, setIsDesktopOrTablet] = useState(false);
 
   useEffect(() => {
-    if (prefersReducedMotion) return;
+    const mediaQuery = window.matchMedia("(min-width: 640px)");
+    const updateViewport = () => setIsDesktopOrTablet(mediaQuery.matches);
+    updateViewport();
+    mediaQuery.addEventListener("change", updateViewport);
+    return () => mediaQuery.removeEventListener("change", updateViewport);
+  }, []);
+
+  const animateEnabled = isDesktopOrTablet && !prefersReducedMotion;
+
+  useEffect(() => {
+    if (!animateEnabled) return;
 
     const handleMouseMove = (e: MouseEvent) => {
       const x = (e.clientX / window.innerWidth) * 2 - 1;
@@ -100,12 +111,12 @@ export const ParallaxHeroImages = ({
 
     window.addEventListener("mousemove", handleMouseMove);
     return () => window.removeEventListener("mousemove", handleMouseMove);
-  }, [mouseX, mouseY, prefersReducedMotion]);
+  }, [mouseX, mouseY, animateEnabled]);
 
   return (
     <div
       className={cn(
-        "pointer-events-none absolute inset-0 overflow-hidden",
+        "hero-floating-images pointer-events-none absolute inset-0 overflow-hidden",
         className,
       )}
     >
@@ -119,6 +130,8 @@ export const ParallaxHeroImages = ({
           imageClassName={imageClassName}
           smoothMouseX={smoothMouseX}
           smoothMouseY={smoothMouseY}
+          isDesktopOrTablet={isDesktopOrTablet}
+          prefersReducedMotion={Boolean(prefersReducedMotion)}
         />
       ))}
     </div>
@@ -129,6 +142,8 @@ interface ParallaxImageProps extends ImagePosition {
   imageClassName?: string;
   smoothMouseX: MotionValue<number>;
   smoothMouseY: MotionValue<number>;
+  isDesktopOrTablet: boolean;
+  prefersReducedMotion: boolean;
 }
 
 const ParallaxImage = memo(function ParallaxImage({
@@ -139,6 +154,8 @@ const ParallaxImage = memo(function ParallaxImage({
   imageClassName,
   smoothMouseX,
   smoothMouseY,
+  isDesktopOrTablet,
+  prefersReducedMotion,
 }: ParallaxImageProps) {
   const maxOffset = 36;
 
@@ -157,6 +174,40 @@ const ParallaxImage = memo(function ParallaxImage({
   const posStyle = positionStyles[position];
   const isMid = position === "mid-left" || position === "mid-right";
 
+  const imageFrame = (
+    <div
+      className={cn(
+        "relative aspect-4/3 h-16 w-24 overflow-hidden rounded-xl shadow-sm ring-1 ring-neutral-900/5 sm:h-32 sm:w-48 md:h-44 md:w-64",
+        imageClassName,
+      )}
+    >
+      <Image
+        src={src}
+        alt=""
+        fill
+        sizes="(max-width: 640px) 96px, (max-width: 768px) 192px, 256px"
+        className="object-cover"
+      />
+    </div>
+  );
+
+  // Keep elements in markup on mobile (<640px) without running JS/motion animations
+  if (!isDesktopOrTablet) {
+    return (
+      <div
+        className={cn("absolute opacity-0", isMid && "hidden sm:block")}
+        style={{
+          top: posStyle.top,
+          left: posStyle.left,
+          right: posStyle.right,
+          zIndex: Math.round(depth * 10),
+        }}
+      >
+        {imageFrame}
+      </div>
+    );
+  }
+
   return (
     <motion.div
       className={cn("absolute", isMid && "hidden sm:block")}
@@ -168,28 +219,23 @@ const ParallaxImage = memo(function ParallaxImage({
         y: translateY,
         zIndex: Math.round(depth * 10),
       }}
-      initial={{ opacity: 0, filter: "blur(12px)", scale: 0.95 }}
+      initial={
+        prefersReducedMotion
+          ? false
+          : { opacity: 0, filter: "blur(12px)", scale: 0.95 }
+      }
       animate={{ opacity: 1, filter: "blur(0px)", scale: 1 }}
-      transition={{
-        duration: 0.7,
-        delay: delay,
-        ease: [0.25, 0.1, 0.25, 1],
-      }}
+      transition={
+        prefersReducedMotion
+          ? { duration: 0 }
+          : {
+              duration: 0.7,
+              delay: delay,
+              ease: [0.25, 0.1, 0.25, 1],
+            }
+      }
     >
-      <div
-        className={cn(
-          "relative aspect-4/3 h-16 w-24 overflow-hidden rounded-xl shadow-sm ring-1 ring-neutral-900/5 sm:h-32 sm:w-48 md:h-44 md:w-64",
-          imageClassName,
-        )}
-      >
-        <Image
-          src={src}
-          alt=""
-          fill
-          sizes="(max-width: 640px) 96px, (max-width: 768px) 192px, 256px"
-          className="object-cover"
-        />
-      </div>
+      {imageFrame}
     </motion.div>
   );
 });

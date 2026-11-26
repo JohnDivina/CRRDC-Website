@@ -58,6 +58,7 @@ export default function Masthead() {
   }, []);
 
   const handleOpenCart = (e: React.MouseEvent) => {
+    setMenuOpen(false);
     if (pathname === "/shop" || pathname.startsWith("/catalog")) {
       e.preventDefault();
       window.dispatchEvent(new CustomEvent("crrdc-open-cart"));
@@ -65,6 +66,7 @@ export default function Masthead() {
   };
 
   const handleOpenFavorites = (e: React.MouseEvent) => {
+    setMenuOpen(false);
     if (pathname === "/shop" || pathname.startsWith("/catalog")) {
       e.preventDefault();
       window.dispatchEvent(new CustomEvent("crrdc-open-favorites"));
@@ -492,7 +494,7 @@ export default function Masthead() {
           background-color: #fbfcf9;
           border-bottom: 1px solid var(--color-border);
           box-shadow: 0 12px 32px rgba(24, 35, 28, 0.08);
-          z-index: 99;
+          z-index: 499;
           transform: translateY(-100%);
           opacity: 0;
           transition: transform var(--dur-slow) var(--ease-out), opacity var(--dur-slow) var(--ease-out);
@@ -535,65 +537,47 @@ export default function Masthead() {
         @media (max-width: 900px) {
           .masthead__menu-toggle { display: flex; }
           .masthead__mobile-nav { display: block; }
-          .masthead__actions { gap: 10px; }
-          .masthead__icon-group { gap: 8px; }
-        }
-        @media (max-width: 640px) {
           .masthead__actions { gap: 8px; }
           .masthead__icon-group { gap: 6px; }
-          .masthead__ordering-btn {
-            height: 34px;
-            padding: 0 12px;
-            font-size: 0.72rem;
-            white-space: nowrap;
-            flex-shrink: 0;
+        }
+        @media (max-width: 640px) {
+          .masthead__inner {
+            gap: 8px;
+            padding-inline: 12px;
           }
-          .masthead__icon-btn {
-            width: 34px;
-            height: 34px;
-            min-width: 34px;
-            min-height: 34px;
+          .masthead[data-scrolled="true"] .masthead__inner,
+          .masthead.is-floating .masthead__inner {
+            max-width: calc(100% - 1rem);
+            padding-inline: 12px;
           }
+          .masthead__wordmark {
+            min-width: 0;
+          }
+          .masthead__ordering-btn,
+          .masthead__icon-group {
+            display: none;
+          }
+          .masthead__actions { gap: 6px; }
           .masthead__menu-toggle {
-            width: 34px;
-            height: 34px;
+            width: 36px;
+            height: 36px;
           }
         }
         @media (max-width: 480px) {
           .masthead__tagline { display: none; }
           .masthead__logo-img { height: 28px; }
+          .masthead__logo-clsu,
           .masthead__logo-crrdc { font-size: var(--text-base); }
-          .masthead__actions { gap: 6px; }
-          .masthead__icon-group { gap: 5px; }
-          .masthead__ordering-btn {
-            height: 32px;
-            padding: 0 9px;
-            font-size: 0.68rem;
-          }
-          .masthead__icon-btn {
-            width: 32px;
-            height: 32px;
-            min-width: 32px;
-            min-height: 32px;
-          }
-          .masthead__menu-toggle {
-            width: 32px;
-            height: 32px;
-          }
+          .masthead__actions { gap: 5px; }
         }
         @media (max-width: 380px) {
-          .masthead__actions { gap: 5px; }
-          .masthead__icon-group { gap: 4px; }
-          .masthead__ordering-btn {
-            padding: 0 7px;
-            font-size: 0.64rem;
+          .masthead__inner {
+            padding-inline: 10px;
           }
-          .masthead__icon-btn {
-            width: 30px;
-            height: 30px;
-            min-width: 30px;
-            min-height: 30px;
-          }
+          .masthead__logo-img { height: 26px; }
+          .masthead__logo-clsu,
+          .masthead__logo-crrdc { font-size: 0.95rem; }
+          .masthead__actions { gap: 4px; }
         }
       `}</style>
     </>

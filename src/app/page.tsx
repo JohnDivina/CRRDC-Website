@@ -3,6 +3,7 @@ import { AppNavbar } from "@/components/layout/Navbar";
 import { Hero } from "@/components/sections/Hero";
 import { Divisions } from "@/components/sections/Divisions";
 import { Facilities } from "@/components/sections/Facilities";
+import { ExternalProjects } from "@/components/sections/ExternalProjects";
 import { Research } from "@/components/sections/Research";
 import { Resources } from "@/components/sections/Resources";
 import { Footer } from "@/components/sections/Footer";
@@ -22,6 +23,9 @@ export default function Home() {
 
         {/* Section 3: Facilities — Animated Testimonials */}
         <Facilities />
+
+        {/* Section 3b: External Projects */}
+        <ExternalProjects />
 
         {/* Section 4: Research & Achievements — Metrics */}
         <Research />
